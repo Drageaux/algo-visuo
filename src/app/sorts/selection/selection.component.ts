@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { RandomNumService } from 'src/app/services/random-num.service';
 
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
@@ -15,19 +16,23 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class SelectionComponent implements OnInit {
   @Input() input = [64, 25, 12, 22, 11];
+  sampleSize = 100;
   result = new BehaviorSubject<number[]>(this.input);
   numbersSorted = 0;
-  constructor() {}
+  constructor(private randomNum: RandomNumService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.input = this.randomNum.generate(this.sampleSize);
+    this.result.next(this.input);
+  }
 
   runAll() {
     const startIndex = this.numbersSorted;
-    console.time(`selection sort from index "${startIndex}"`);
     while (this.numbersSorted < this.input.length) {
+      console.time(`selection sort from index "${startIndex}"`);
       this.onStep();
+      console.timeEnd(`selection sort from index "${startIndex}"`);
     }
-    console.timeEnd(`selection sort from index "${startIndex}"`);
   }
 
   onStep() {
