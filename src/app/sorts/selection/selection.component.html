@@ -1,1 +1,6 @@
-<p>selection works!</p>
+<div *ngFor="let num of result | async">
+  {{ num }}
+</div>
+Sorted nums: {{ numbersSorted }}
+
+<button (click)="onClick()">Selection Sort</button>
