@@ -21,13 +21,15 @@ export class SelectionComponent implements OnInit {
 
   ngOnInit() {}
 
-  onClick() {
+  onStep() {
     const arr = Object.assign([], this.result.value);
     if (this.numbersSorted >= arr.length) {
       return;
     }
 
-    const minInd = this.selectMinInd(arr.slice(this.numbersSorted, arr.length));
+    const minInd =
+      this.numbersSorted +
+      this.selectMinInd(arr.slice(this.numbersSorted, arr.length));
 
     // swap
     const temp = arr[minInd];
