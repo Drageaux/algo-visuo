@@ -1,17 +1,18 @@
 <div class="container">
   <button class="btn btn-primary" (click)="onStep()">Step ></button>
   <button class="btn btn-success" (click)="runAll()">Run to End >></button>
-  <div *ngFor="let num of result | async">
-    <div class="progress my-2">
-      <div
-        class="progress-bar"
-        role="progressbar"
-        [style.width]="num + '%'"
-        [attr.aria-valuenow]="num"
-        aria-valuemin="0"
-        aria-valuemax="100"
-      ></div>
-    </div>
+  <div class="graph" [style.height]="'80vh'" #graph>
+    <div
+      *ngFor="let num of result | async"
+      class="d-inline-block"
+      [style.height]="(num.value / input.length) * 100 + '%'"
+      [style.width]="graph.offsetWidth / input.length + 'px'"
+      [ngClass]="{
+        'bg-primary': num.status === eSortStatus.UNSORTED,
+        'bg-warning': num.status === eSortStatus.SORTING,
+        'bg-success': num.status === eSortStatus.SORTED
+      }"
+    ></div>
   </div>
   Sorted nums: {{ numbersSorted }}
 </div>
