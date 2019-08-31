@@ -21,6 +21,15 @@ export class SelectionComponent implements OnInit {
 
   ngOnInit() {}
 
+  runAll() {
+    const startIndex = this.numbersSorted;
+    console.time(`selection sort from index "${startIndex}"`);
+    while (this.numbersSorted < this.input.length) {
+      this.onStep();
+    }
+    console.timeEnd(`selection sort from index "${startIndex}"`);
+  }
+
   onStep() {
     const arr = Object.assign([], this.result.value);
     if (this.numbersSorted >= arr.length) {
