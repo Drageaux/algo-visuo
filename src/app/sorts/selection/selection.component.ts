@@ -40,6 +40,10 @@ export class SelectionComponent implements OnInit {
     sorted: 0
   });
   eSortStatus = SortStatus;
+
+  // TODO: secured model
+  private res = null;
+
   constructor(
     private randomNum: RandomNumService,
     private cd: ChangeDetectorRef
@@ -54,6 +58,7 @@ export class SelectionComponent implements OnInit {
     this.result.next({ data: this.input, sorted: 0 });
   }
 
+  // TODO: controller should only fetch model at intervals
   runAll() {
     // console.time(`selection sort from index "${startIndex}"`);
     // while (this.numbersSorted < this.input.length) {
@@ -93,6 +98,36 @@ export class SelectionComponent implements OnInit {
         delay(speed / 2)
       )
       .subscribe(x => console.log(x));
+  }
+
+  animate(input: SortItem<number>[], from = 0) {
+    // TODO
+    let currentResult = {
+      data: Object.assign([], input),
+      sorted: from
+    };
+
+    const minInd =
+      currentResult.sorted +
+      this.selectMinInd(
+        currentResult.data.slice(currentResult.sorted, input.length)
+      );
+
+    // highlight
+    currentResult.data[minInd].status = SortStatus.SORTING;
+    currentResult.data[currentResult.sorted].status = SortStatus.SORTING;
+    this.res.next({});
+
+    // swap
+    const temp = currentResult.data[minInd];
+    currentResult.data[minInd] = currentResult.data[currentResult.sorted];
+    currentResult.data[currentResult.sorted] = temp;
+    currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
+
+    this.res.next({
+      data: currentResult.data,
+      sorted: currentResult.sorted + 1
+    });
   }
 
   onStep() {
