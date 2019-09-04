@@ -1,9 +1,11 @@
 <div class="container">
   <button class="btn btn-primary" (click)="onStep()">Step ></button>
   <button class="btn btn-success" (click)="runAll()">Run to End >></button>
+
+  <input [(ngModel)]="speed" />
   <div class="graph" [style.height]="'80vh'" #graph>
     <div
-      *ngFor="let num of result | async"
+      *ngFor="let num of (result | async).data"
       class="d-inline-block"
       [style.height]="(num.value / input.length) * 100 + '%'"
       [style.width]="graph.offsetWidth / input.length + 'px'"

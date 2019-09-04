@@ -5,11 +5,20 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, empty, interval } from 'rxjs';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortItem } from 'src/app/classes/sort-item';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
-import { delay, takeUntil, takeWhile, tap, map, repeat } from 'rxjs/operators';
+import {
+  delay,
+  takeUntil,
+  takeWhile,
+  tap,
+  map,
+  repeat,
+  expand,
+  switchMap
+} from 'rxjs/operators';
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
  * (considering ascending order) from unsorted part and putting it at the beginning.
@@ -25,9 +34,11 @@ import { delay, takeUntil, takeWhile, tap, map, repeat } from 'rxjs/operators';
 export class SelectionComponent implements OnInit {
   @Input() input: SortItem<number>[] = [];
   sampleSize = 100;
-  result = new BehaviorSubject<SortItem<number>[]>([]);
-  res;
-  numbersSorted = 0;
+  speed = 200;
+  result = new BehaviorSubject<{ data: SortItem<number>[]; sorted: number }>({
+    data: [],
+    sorted: 0
+  });
   eSortStatus = SortStatus;
   constructor(
     private randomNum: RandomNumService,
@@ -40,68 +51,72 @@ export class SelectionComponent implements OnInit {
       value: x,
       status: SortStatus.UNSORTED
     }));
-    this.result.next(this.input);
+    this.result.next({ data: this.input, sorted: 0 });
   }
 
   runAll() {
-    const startIndex = this.numbersSorted;
     // console.time(`selection sort from index "${startIndex}"`);
     // while (this.numbersSorted < this.input.length) {
     //   this.onStep();
     // }
     // console.timeEnd(`selection sort from index "${startIndex}"`);
-    this.res = of(this.result.value)
+    const speed = this.speed;
+
+    // not exactly sure why delay with speed "/ 2" would still catch up with speed
+    interval(speed)
       .pipe(
-        repeat(this.sampleSize),
-        map(arr => {
+        takeWhile(
+          () => this.result.value.sorted < this.result.value.data.length
+        ),
+        map(() => this.result.value),
+        map(({ data: arr, sorted }) => {
           const minInd =
-            this.numbersSorted +
-            this.selectMinInd(arr.slice(this.numbersSorted, arr.length));
+            sorted + this.selectMinInd(arr.slice(sorted, arr.length));
 
           // highlight
           arr[minInd].status = SortStatus.SORTING;
-          arr[this.numbersSorted].status = SortStatus.SORTING;
-          this.result.next(arr);
-          return { arr, minInd };
+          arr[sorted].status = SortStatus.SORTING;
+          this.result.next({ data: arr, sorted });
+          return { arr, sorted, minInd };
         }),
-        delay(200),
-        map(({ arr, minInd }) => {
+        delay(speed / 2),
+        map(({ arr, sorted, minInd }) => {
           // swap
           const temp = arr[minInd];
-          arr[minInd] = arr[this.numbersSorted];
-          arr[this.numbersSorted] = temp;
-          arr[this.numbersSorted].status = SortStatus.SORTED;
-          this.numbersSorted++;
-          this.result.next(arr);
-          return arr;
+          arr[minInd] = arr[sorted];
+          arr[sorted] = temp;
+          arr[sorted].status = SortStatus.SORTED;
+          const newSorted = sorted + 1;
+          this.result.next({ data: arr, sorted: newSorted });
+          return this.result.value;
         }),
-        delay(200)
+        delay(speed / 2)
       )
       .subscribe(x => console.log(x));
   }
 
   onStep() {
     const arr = Object.assign([], this.result.value);
-    if (this.numbersSorted >= arr.length) {
+    if (this.result.value.sorted >= arr.length) {
       return;
     }
 
     const minInd =
-      this.numbersSorted +
-      this.selectMinInd(arr.slice(this.numbersSorted, arr.length));
+      this.result.value.sorted +
+      this.selectMinInd(arr.slice(this.result.value.sorted, arr.length));
 
     // highlight
     arr[minInd].status = SortStatus.SORTING;
-    arr[this.numbersSorted].status = SortStatus.SORTING;
+    arr[this.result.value.sorted].status = SortStatus.SORTING;
     this.result.next(arr);
 
     // swap
     const temp = arr[minInd];
-    arr[minInd] = arr[this.numbersSorted];
-    arr[this.numbersSorted] = temp;
-    arr[this.numbersSorted].status = SortStatus.SORTED;
-    this.numbersSorted++;
-    this.result.next(arr);
+    arr[minInd] = arr[this.result.value.sorted];
+    arr[this.result.value.sorted] = temp;
+    arr[this.result.value.sorted].status = SortStatus.SORTED;
+
+    this.result.next({ data: arr, sorted: this.result.value.sorted + 1 });
   }
 
   selectMinInd(unsortedSubArr: SortItem<number>[]) {
