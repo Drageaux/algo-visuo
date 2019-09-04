@@ -43,6 +43,7 @@ export class SelectionComponent implements OnInit {
 
   // TODO: secured model
   private res = null;
+  private interval;
 
   constructor(
     private randomNum: RandomNumService,
@@ -60,74 +61,74 @@ export class SelectionComponent implements OnInit {
 
   // TODO: controller should only fetch model at intervals
   runAll() {
+    // if (this)
     // console.time(`selection sort from index "${startIndex}"`);
     // while (this.numbersSorted < this.input.length) {
     //   this.onStep();
     // }
     // console.timeEnd(`selection sort from index "${startIndex}"`);
-    const speed = this.speed;
 
+    const speed = 300;
+
+    this.sortInBackground(this.input, 300);
     // not exactly sure why delay with speed "/ 2" would still catch up with speed
     interval(speed)
       .pipe(
-        takeWhile(
-          () => this.result.value.sorted < this.result.value.data.length
-        ),
-        map(() => this.result.value),
-        map(({ data: arr, sorted }) => {
-          const minInd =
-            sorted + this.selectMinInd(arr.slice(sorted, arr.length));
-
-          // highlight
-          arr[minInd].status = SortStatus.SORTING;
-          arr[sorted].status = SortStatus.SORTING;
-          this.result.next({ data: arr, sorted });
-          return { arr, sorted, minInd };
-        }),
+        takeWhile(() => this.interval && this.res.sorted < this.input.length),
+        tap(() => this.result.next(this.res)),
         delay(speed / 2),
-        map(({ arr, sorted, minInd }) => {
-          // swap
-          const temp = arr[minInd];
-          arr[minInd] = arr[sorted];
-          arr[sorted] = temp;
-          arr[sorted].status = SortStatus.SORTED;
-          const newSorted = sorted + 1;
-          this.result.next({ data: arr, sorted: newSorted });
-          return this.result.value;
-        }),
+        tap(() => this.result.next(this.res)),
+        map(() => this.res),
         delay(speed / 2)
       )
-      .subscribe(x => console.log(x));
+      .subscribe(x => console.log(this.input));
   }
 
-  animate(input: SortItem<number>[], from = 0) {
-    // TODO
-    let currentResult = {
-      data: Object.assign([], input),
+  sortInBackground(
+    input: SortItem<number>[],
+    iterationDuration = 300,
+    from = 0
+  ) {
+    clearInterval(this.interval);
+    this.interval = null;
+    console.log('clearing', this.interval);
+
+    // ! input has nested objects, so changing that object even via
+    // ! Objectassign would also cause side effects
+    const currentResult = {
+      data: JSON.parse(JSON.stringify(input)),
       sorted: from
     };
 
-    const minInd =
-      currentResult.sorted +
-      this.selectMinInd(
-        currentResult.data.slice(currentResult.sorted, input.length)
-      );
+    this.interval = setInterval(() => {
+      if (currentResult.sorted >= input.length) {
+        clearInterval(this.interval);
+      }
+      const minInd =
+        currentResult.sorted +
+        this.selectMinInd(
+          currentResult.data.slice(currentResult.sorted, input.length)
+        );
 
-    // highlight
-    currentResult.data[minInd].status = SortStatus.SORTING;
-    currentResult.data[currentResult.sorted].status = SortStatus.SORTING;
-    this.res.next({});
+      // highlight
+      currentResult.data[minInd].status = SortStatus.SORTING;
+      currentResult.data[currentResult.sorted].status = SortStatus.SORTING;
+      this.res = currentResult;
 
-    // swap
-    const temp = currentResult.data[minInd];
-    currentResult.data[minInd] = currentResult.data[currentResult.sorted];
-    currentResult.data[currentResult.sorted] = temp;
-    currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
+      // swap
+      const temp = currentResult.data[minInd];
+      currentResult.data[minInd] = currentResult.data[currentResult.sorted];
+      currentResult.data[currentResult.sorted] = temp;
+      currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
 
-    this.res.next({
-      data: currentResult.data,
-      sorted: currentResult.sorted + 1
-    });
+      currentResult.sorted++;
+      this.res = currentResult;
+    }, iterationDuration);
+  }
+
+  pause() {
+    clearInterval(this.interval);
+    this.interval = null;
   }
 
   onStep() {

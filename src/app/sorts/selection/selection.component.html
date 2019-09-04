@@ -1,6 +1,7 @@
 <div class="container">
   <button class="btn btn-primary" (click)="onStep()">Step ></button>
   <button class="btn btn-success" (click)="runAll()">Run to End >></button>
+  <button class="btn btn-success" (click)="pause()">Pause ||</button>
 
   <input [(ngModel)]="speed" />
   <div class="graph" [style.height]="'80vh'" #graph>
@@ -14,7 +15,8 @@
         'bg-warning': num.status === eSortStatus.SORTING,
         'bg-success': num.status === eSortStatus.SORTED
       }"
+      [attr.data-value]="num"
     ></div>
   </div>
-  Sorted nums: {{ numbersSorted }}
+  Sorted nums: {{ (result | async).sorted }}
 </div>
