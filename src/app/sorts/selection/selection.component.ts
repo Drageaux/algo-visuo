@@ -6,7 +6,8 @@ import {
   ChangeDetectorRef,
   ViewChild,
   HostListener,
-  AfterViewInit
+  AfterViewInit,
+  OnDestroy
 } from '@angular/core';
 import { BehaviorSubject, Observable, of, empty, interval } from 'rxjs';
 import { RandomNumService } from 'src/app/services/random-num.service';
@@ -36,7 +37,7 @@ import { SubSink } from 'subsink';
   templateUrl: './selection.component.html',
   styleUrls: ['./selection.component.scss']
 })
-export class SelectionComponent implements OnInit, AfterViewInit {
+export class SelectionComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
@@ -84,9 +85,7 @@ export class SelectionComponent implements OnInit, AfterViewInit {
   removeRunningIntervals() {
     clearInterval(this.interval);
     this.interval = null;
-    console.log('clearing interval', this.interval);
     this.subs.unsubscribe();
-    console.log('clearing subsink', this.subs);
   }
 
   onChangeSampleSize() {
@@ -114,7 +113,7 @@ export class SelectionComponent implements OnInit, AfterViewInit {
         map(() => this.res),
         delay(speed / 2)
       )
-      .subscribe(x => console.log(this.input));
+      .subscribe();
   }
 
   private sortInBackground(
@@ -187,5 +186,10 @@ export class SelectionComponent implements OnInit, AfterViewInit {
       result[i] = temp;
     }
     return result;
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+    clearInterval();
   }
 }
