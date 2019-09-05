@@ -1,4 +1,6 @@
 <div class="container">
+  <h2 class="page-title">Selection Sort</h2>
+
   <div class="form-row">
     <div class="form-group col px-4">
       <label for="speed">Animation Duration: {{ speed }}</label>
@@ -33,19 +35,21 @@
     </div>
   </div>
 
-  <div *ngIf="result$ | async as result" class="graph" #graph>
-    <div
-      *ngFor="let num of result.data"
-      class="d-inline-block"
-      [style.height]="(num.value / input.length) * 100 + '%'"
-      [style.width]="graph.offsetWidth / input.length + 'px'"
-      [ngClass]="{
-        'bg-primary': num.status === eSortStatus.UNSORTED,
-        'bg-warning': num.status === eSortStatus.SORTING,
-        'bg-success': num.status === eSortStatus.SORTED
-      }"
-      [attr.data-value]="num"
-    ></div>
-    Sorted nums: {{ result.sorted }}
+  <div class="graph-container" *ngIf="result$ | async as result">
+    <span class="my-2">Sorted {{ result.sorted }}</span>
+    <div class="graph" #graph>
+      <div
+        *ngFor="let num of result.data"
+        class="d-inline-block"
+        [style.height]="(num.value / input.length) * 100 + '%'"
+        [style.width]="graph.offsetWidth / input.length + 'px'"
+        [ngClass]="{
+          'bg-primary': num.status === eSortStatus.UNSORTED,
+          'bg-warning': num.status === eSortStatus.SORTING,
+          'bg-success': num.status === eSortStatus.SORTED
+        }"
+        [attr.data-value]="num"
+      ></div>
+    </div>
   </div>
 </div>
