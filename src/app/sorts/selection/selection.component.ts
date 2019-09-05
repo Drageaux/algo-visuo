@@ -77,15 +77,17 @@ export class SelectionComponent implements OnInit, AfterViewInit {
   }
 
   reset() {
+    this.removeRunningIntervals();
+    this.onResize();
+    this.cd.detectChanges();
+  }
+
+  removeRunningIntervals() {
     clearInterval(this.interval);
     this.interval = null;
     console.log('clearing interval', this.interval);
     this.subs.unsubscribe();
     console.log('clearing subsink', this.subs);
-
-    this.onChangeSampleSize();
-    this.onResize();
-    this.cd.detectChanges();
   }
 
   onChangeSampleSize() {
@@ -93,6 +95,7 @@ export class SelectionComponent implements OnInit, AfterViewInit {
       value: x,
       status: SortStatus.UNSORTED
     }));
+    this.reset();
     this.result$.next({ data: this.input, sorted: 0 });
   }
 
