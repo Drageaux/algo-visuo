@@ -79,7 +79,6 @@ export class SelectionComponent implements OnInit, AfterViewInit {
   reset() {
     this.removeRunningIntervals();
     this.onResize();
-    this.cd.detectChanges();
   }
 
   removeRunningIntervals() {
