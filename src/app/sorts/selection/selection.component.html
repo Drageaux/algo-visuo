@@ -1,14 +1,36 @@
 <div class="container">
-  <button class="btn btn-primary" (click)="onStep()">Step ></button>
   <button class="btn btn-success" (click)="runAll()">
     Run from Beginning >>
   </button>
-  <button class="btn btn-success" (click)="stop()">Stop ||</button>
+  <button class="btn btn-danger" (click)="stop()">Stop ||</button>
 
-  <input [(ngModel)]="speed" />
-  <div class="graph" [style.height]="'80vh'" #graph>
+  <div class="form-group">
+    <label for="speed">Animation Duration</label>
+    <input id="speed" class="form-control" [(ngModel)]="speed" type="number" />
+  </div>
+  <div class="form-group">
+    <!-- (change) fires once for type number -->
+    <label for="sample-size">Sample Size: {{ sampleSize }}</label>
+    <input
+      id="sample-size"
+      class="form-control-range"
+      [(ngModel)]="sampleSize"
+      (change)="onChangeSampleSize()"
+      type="range"
+      min="10"
+      max="500"
+      #size
+    />
+  </div>
+
+  <div
+    *ngIf="result$ | async as result"
+    class="graph"
+    [style.height]="'80vh'"
+    #graph
+  >
     <div
-      *ngFor="let num of (result | async).data"
+      *ngFor="let num of result.data"
       class="d-inline-block"
       [style.height]="(num.value / input.length) * 100 + '%'"
       [style.width]="graph.offsetWidth / input.length + 'px'"
@@ -19,6 +41,6 @@
       }"
       [attr.data-value]="num"
     ></div>
+    Sorted nums: {{ result.sorted }}
   </div>
-  Sorted nums: {{ (result | async).sorted }}
 </div>

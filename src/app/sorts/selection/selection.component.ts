@@ -3,7 +3,10 @@ import {
   OnInit,
   Input,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ViewChild,
+  HostListener,
+  AfterViewInit
 } from '@angular/core';
 import { BehaviorSubject, Observable, of, empty, interval } from 'rxjs';
 import { RandomNumService } from 'src/app/services/random-num.service';
@@ -33,15 +36,17 @@ import { SubSink } from 'subsink';
   templateUrl: './selection.component.html',
   styleUrls: ['./selection.component.scss']
 })
-export class SelectionComponent implements OnInit {
+export class SelectionComponent implements OnInit, AfterViewInit {
   @Input() input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
-  result = new BehaviorSubject<{ data: SortItem<number>[]; sorted: number }>({
+  eSortStatus = SortStatus;
+  @ViewChild('graph', { static: false }) graphEl;
+  barWidth = '1px';
+  result$ = new BehaviorSubject<{ data: SortItem<number>[]; sorted: number }>({
     data: [],
     sorted: 0
   });
-  eSortStatus = SortStatus;
 
   private subs = new SubSink();
   // TODO: secured model
@@ -55,27 +60,44 @@ export class SelectionComponent implements OnInit {
 
   ngOnInit() {
     this.sampleSize = 50;
-    this.input = this.randomNum.generate(this.sampleSize).map(x => ({
-      value: x,
-      status: SortStatus.UNSORTED
-    }));
-    this.result.next({ data: this.input, sorted: 0 });
+    this.onChangeSampleSize();
   }
 
-  // TODO: controller should only fetch model at intervals
-  runAll() {
-    // if (this)
-    // console.time(`selection sort from index "${startIndex}"`);
-    // while (this.numbersSorted < this.input.length) {
-    //   this.onStep();
-    // }
-    // console.timeEnd(`selection sort from index "${startIndex}"`);
+  @HostListener('window:resize') onResize() {
+    // guard against resize before view is rendered
+    if (this.graphEl) {
+      this.barWidth =
+        this.graphEl.nativeElement.clientWidth / this.sampleSize + 'px';
+      this.cd.detectChanges();
+    }
+  }
 
+  ngAfterViewInit() {
+    this.onResize();
+  }
+
+  reset() {
     clearInterval(this.interval);
     this.interval = null;
     console.log('clearing interval', this.interval);
     this.subs.unsubscribe();
     console.log('clearing subsink', this.subs);
+
+    this.onChangeSampleSize();
+    this.onResize();
+    this.cd.detectChanges();
+  }
+
+  onChangeSampleSize() {
+    this.input = this.randomNum.generate(this.sampleSize).map(x => ({
+      value: x,
+      status: SortStatus.UNSORTED
+    }));
+    this.result$.next({ data: this.input, sorted: 0 });
+  }
+
+  runAll() {
+    this.reset();
 
     const speed = this.speed;
     // rerun sorting the model
@@ -84,9 +106,9 @@ export class SelectionComponent implements OnInit {
     this.subs.sink = interval(speed)
       .pipe(
         takeWhile(() => this.interval && this.res.sorted < this.input.length),
-        tap(() => this.result.next(this.res)),
+        tap(() => this.result$.next(this.res)),
         delay(speed / 2),
-        tap(() => this.result.next(this.res)),
+        tap(() => this.result$.next(this.res)),
         map(() => this.res),
         delay(speed / 2)
       )
