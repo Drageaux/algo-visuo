@@ -1,34 +1,39 @@
 <div class="container">
-  <button class="btn btn-success" (click)="runAll()">
-    Run from Beginning >>
-  </button>
-  <button class="btn btn-danger" (click)="stop()">Stop ||</button>
-
-  <div class="form-group">
-    <label for="speed">Animation Duration</label>
-    <input id="speed" class="form-control" [(ngModel)]="speed" type="number" />
+  <div class="form-row">
+    <div class="form-group col px-4">
+      <label for="speed">Animation Duration: {{ speed }}</label>
+      <input
+        id="speed"
+        class="form-control-range"
+        [(ngModel)]="speed"
+        type="range"
+        min="100"
+        max="1000"
+      />
+    </div>
+    <div class="form-group col px-4">
+      <!-- (change) fires once for type number -->
+      <label for="sample-size">Sample Size: {{ sampleSize }}</label>
+      <input
+        id="sample-size"
+        class="form-control-range"
+        [(ngModel)]="sampleSize"
+        (change)="onChangeSampleSize()"
+        type="range"
+        min="10"
+        max="500"
+        #size
+      />
+    </div>
+    <div class="col-12">
+      <button class="btn btn-success mr-2" (click)="runAll()">
+        Run from Beginning >>
+      </button>
+      <button class="btn btn-danger mr-2" (click)="stop()">Stop ||</button>
+    </div>
   </div>
-  <div class="form-group">
-    <!-- (change) fires once for type number -->
-    <label for="sample-size">Sample Size: {{ sampleSize }}</label>
-    <input
-      id="sample-size"
-      class="form-control-range"
-      [(ngModel)]="sampleSize"
-      (change)="onChangeSampleSize()"
-      type="range"
-      min="10"
-      max="500"
-      #size
-    />
-  </div>
 
-  <div
-    *ngIf="result$ | async as result"
-    class="graph"
-    [style.height]="'80vh'"
-    #graph
-  >
+  <div *ngIf="result$ | async as result" class="graph" #graph>
     <div
       *ngFor="let num of result.data"
       class="d-inline-block"
