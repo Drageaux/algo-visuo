@@ -2,28 +2,19 @@ import {
   Component,
   OnInit,
   Input,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   ViewChild,
   HostListener,
   AfterViewInit,
   OnDestroy
 } from '@angular/core';
-import { BehaviorSubject, Observable, of, empty, interval } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortItem } from 'src/app/classes/sort-item';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
-import {
-  delay,
-  takeUntil,
-  takeWhile,
-  tap,
-  map,
-  repeat,
-  expand,
-  switchMap
-} from 'rxjs/operators';
+import { delay, takeWhile, tap, map } from 'rxjs/operators';
 import { SubSink } from 'subsink';
+import { SortData } from 'src/app/classes/sort-data';
 
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
@@ -44,14 +35,14 @@ export class SelectionComponent implements OnInit, AfterViewInit, OnDestroy {
   eSortStatus = SortStatus;
   @ViewChild('graph', { static: false }) graphEl;
   barWidth = '1px';
-  result$ = new BehaviorSubject<{ data: SortItem<number>[]; sorted: number }>({
+  result$ = new BehaviorSubject<SortData>({
     data: [],
     sorted: 0
   });
 
   private subs = new SubSink();
-  // TODO: secured model
-  private res: { data: SortItem<number>[]; sorted: number } = null;
+  // model
+  private res: SortData = null;
   private interval;
 
   constructor(
@@ -122,7 +113,7 @@ export class SelectionComponent implements OnInit, AfterViewInit, OnDestroy {
     from = 0
   ) {
     // ! input has nested objects, so changing that object even via
-    // ! Objectassign would also cause side effects
+    // ! Object.assign would also cause side effects
     const currentResult = {
       data: JSON.parse(JSON.stringify(input)),
       sorted: from
@@ -171,21 +162,6 @@ export class SelectionComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     return minInd;
-  }
-
-  private sort(arr: SortItem<number>[]) {
-    const result = arr;
-    const n = result.length;
-
-    for (let i = 0; i < n - 1; i++) {
-      const minInd = this.selectMinInd(result.slice(i + 1, n));
-
-      // swap
-      const temp = result[minInd];
-      result[minInd] = result[i];
-      result[i] = temp;
-    }
-    return result;
   }
 
   ngOnDestroy(): void {
