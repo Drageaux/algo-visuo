@@ -1,7 +1,9 @@
 <div class="container">
   <button class="btn btn-primary" (click)="onStep()">Step ></button>
-  <button class="btn btn-success" (click)="runAll()">Run to End >></button>
-  <button class="btn btn-success" (click)="pause()">Pause ||</button>
+  <button class="btn btn-success" (click)="runAll()">
+    Run from Beginning >>
+  </button>
+  <button class="btn btn-success" (click)="stop()">Stop ||</button>
 
   <input [(ngModel)]="speed" />
   <div class="graph" [style.height]="'80vh'" #graph>

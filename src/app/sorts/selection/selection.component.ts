@@ -19,6 +19,8 @@ import {
   expand,
   switchMap
 } from 'rxjs/operators';
+import { SubSink } from 'subsink';
+
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
  * (considering ascending order) from unsorted part and putting it at the beginning.
@@ -41,8 +43,9 @@ export class SelectionComponent implements OnInit {
   });
   eSortStatus = SortStatus;
 
+  private subs = new SubSink();
   // TODO: secured model
-  private res = null;
+  private res: { data: SortItem<number>[]; sorted: number } = null;
   private interval;
 
   constructor(
@@ -68,11 +71,17 @@ export class SelectionComponent implements OnInit {
     // }
     // console.timeEnd(`selection sort from index "${startIndex}"`);
 
-    const speed = 300;
+    clearInterval(this.interval);
+    this.interval = null;
+    console.log('clearing interval', this.interval);
+    this.subs.unsubscribe();
+    console.log('clearing subsink', this.subs);
 
-    this.sortInBackground(this.input, 300);
-    // not exactly sure why delay with speed "/ 2" would still catch up with speed
-    interval(speed)
+    const speed = this.speed;
+    // rerun sorting the model
+    this.sortInBackground(this.input, speed);
+    // grab the private model every rxjs interval
+    this.subs.sink = interval(speed)
       .pipe(
         takeWhile(() => this.interval && this.res.sorted < this.input.length),
         tap(() => this.result.next(this.res)),
@@ -84,15 +93,11 @@ export class SelectionComponent implements OnInit {
       .subscribe(x => console.log(this.input));
   }
 
-  sortInBackground(
+  private sortInBackground(
     input: SortItem<number>[],
     iterationDuration = 300,
     from = 0
   ) {
-    clearInterval(this.interval);
-    this.interval = null;
-    console.log('clearing', this.interval);
-
     // ! input has nested objects, so changing that object even via
     // ! Objectassign would also cause side effects
     const currentResult = {
@@ -101,7 +106,7 @@ export class SelectionComponent implements OnInit {
     };
 
     this.interval = setInterval(() => {
-      if (currentResult.sorted >= input.length) {
+      if (currentResult.sorted >= input.length - 1) {
         clearInterval(this.interval);
       }
       const minInd =
@@ -126,36 +131,12 @@ export class SelectionComponent implements OnInit {
     }, iterationDuration);
   }
 
-  pause() {
+  stop() {
     clearInterval(this.interval);
     this.interval = null;
   }
 
-  onStep() {
-    const arr = Object.assign([], this.result.value);
-    if (this.result.value.sorted >= arr.length) {
-      return;
-    }
-
-    const minInd =
-      this.result.value.sorted +
-      this.selectMinInd(arr.slice(this.result.value.sorted, arr.length));
-
-    // highlight
-    arr[minInd].status = SortStatus.SORTING;
-    arr[this.result.value.sorted].status = SortStatus.SORTING;
-    this.result.next(arr);
-
-    // swap
-    const temp = arr[minInd];
-    arr[minInd] = arr[this.result.value.sorted];
-    arr[this.result.value.sorted] = temp;
-    arr[this.result.value.sorted].status = SortStatus.SORTED;
-
-    this.result.next({ data: arr, sorted: this.result.value.sorted + 1 });
-  }
-
-  selectMinInd(unsortedSubArr: SortItem<number>[]) {
+  private selectMinInd(unsortedSubArr: SortItem<number>[]) {
     let minInd = 0;
     for (
       let unsortedInd = 0;
