@@ -1,11 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SelectionComponent } from './sorts/selection/selection.component';
+import { BubbleComponent } from './sorts/bubble/bubble.component';
 
 const routes: Routes = [
   {
     path: 'sorts/selection',
     component: SelectionComponent
+  },
+  {
+    path: 'sorts/bubble',
+    component: BubbleComponent
   },
   {
     path: '**',
