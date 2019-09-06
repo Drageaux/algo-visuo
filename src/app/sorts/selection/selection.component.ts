@@ -28,13 +28,11 @@ import { SortData } from 'src/app/classes/sort-data';
   templateUrl: './selection.component.html',
   styleUrls: ['./selection.component.scss']
 })
-export class SelectionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SelectionComponent implements OnInit, OnDestroy {
   @Input() input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
-  eSortStatus = SortStatus;
   @ViewChild('graph', { static: false }) graphEl;
-  barWidth = '1px';
   result$ = new BehaviorSubject<SortData>({
     data: [],
     sorted: 0
@@ -55,22 +53,8 @@ export class SelectionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onChangeSampleSize();
   }
 
-  @HostListener('window:resize') onResize() {
-    // guard against resize before view is rendered
-    if (this.graphEl) {
-      this.barWidth =
-        this.graphEl.nativeElement.clientWidth / this.sampleSize + 'px';
-      this.cd.detectChanges();
-    }
-  }
-
-  ngAfterViewInit() {
-    this.onResize();
-  }
-
   reset() {
     this.removeRunningIntervals();
-    this.onResize();
   }
 
   removeRunningIntervals() {
@@ -98,7 +82,10 @@ export class SelectionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.sink = interval(speed)
       .pipe(
         takeWhile(() => this.interval && this.res.sorted < this.input.length),
-        tap(() => this.result$.next(this.res)),
+        tap(() => {
+          this.result$.next(this.res);
+          this.cd.detectChanges();
+        }),
         delay(speed / 2),
         tap(() => this.result$.next(this.res)),
         map(() => this.res),

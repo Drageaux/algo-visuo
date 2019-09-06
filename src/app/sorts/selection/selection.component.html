@@ -35,21 +35,10 @@
     </div>
   </div>
 
-  <div class="graph-container" *ngIf="result$ | async as result">
-    <span class="my-2">Sorted {{ result.sorted }}</span>
-    <div class="graph" #graph>
-      <div
-        *ngFor="let num of result.data"
-        class="d-inline-block"
-        [style.height]="(num.value / input.length) * 100 + '%'"
-        [style.width]="graph.offsetWidth / input.length + 'px'"
-        [ngClass]="{
-          'bg-primary': num.status === eSortStatus.UNSORTED,
-          'bg-warning': num.status === eSortStatus.SORTING,
-          'bg-success': num.status === eSortStatus.SORTED
-        }"
-        [attr.data-value]="num"
-      ></div>
-    </div>
-  </div>
+  <app-graph
+    *ngIf="result$ | async as result"
+    [data]="result.data"
+    [sorted]="result.sorted"
+    [sampleSize]="sampleSize"
+  ></app-graph>
 </div>

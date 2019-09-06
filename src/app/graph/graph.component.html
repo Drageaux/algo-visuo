@@ -1,0 +1,17 @@
+<div class="graph-container">
+  <span class="my-2">Sorted {{ sorted }}</span>
+  <div class="graph text-center" #graph>
+    <div
+      *ngFor="let num of data"
+      class="d-inline-block"
+      [style.height]="(num.value / sampleSize) * 100 + '%'"
+      [style.width]="barWidth"
+      [ngClass]="{
+        'bg-primary': num.status === eSortStatus.UNSORTED,
+        'bg-warning': num.status === eSortStatus.SORTING,
+        'bg-success': num.status === eSortStatus.SORTED
+      }"
+      [attr.data-value]="num"
+    ></div>
+  </div>
+</div>
