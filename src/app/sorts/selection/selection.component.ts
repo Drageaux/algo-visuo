@@ -67,6 +67,10 @@ export class SelectionComponent implements OnInit, OnDestroy {
     clearInterval();
   }
 
+  eventTest($event) {
+    console.log($event);
+  }
+
   /*************************************************************************/
   /************************* INPUT CHANGE DETECTION ************************/
   /*************************************************************************/
