@@ -1,0 +1,24 @@
+<div class="container">
+  <h2 class="page-title">Bubble Sort</h2>
+
+  <app-controls
+    [speed]="speed"
+    (speedChangeEvent)="speed = $event"
+    [sampleSize]="sampleSize"
+    (sampleSizeChangeEvent)="sampleSize = $event; onChangeSampleSize()"
+  ></app-controls>
+  <div class="d-block">
+    <button class="btn btn-success mr-2" (click)="runAll()">
+      Run from Beginning >>
+    </button>
+    <button class="btn btn-danger mr-2" (click)="stop()">Stop ||</button>
+  </div>
+
+  <app-graph
+    *ngIf="result$ | async as result"
+    [data]="result.data"
+    [sorted]="result.sorted"
+    [sampleSize]="sampleSize"
+  >
+  </app-graph>
+</div>
