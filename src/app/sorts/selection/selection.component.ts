@@ -15,6 +15,7 @@ import { SortStatus } from 'src/app/classes/sort-status.enum';
 import { delay, takeWhile, tap, map } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { SortData } from 'src/app/classes/sort-data';
+import { SortComponentInterface } from '../sort-component-interface';
 
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
@@ -28,7 +29,8 @@ import { SortData } from 'src/app/classes/sort-data';
   templateUrl: './selection.component.html',
   styleUrls: ['./selection.component.scss']
 })
-export class SelectionComponent implements OnInit, OnDestroy {
+export class SelectionComponent
+  implements SortComponentInterface, OnInit, OnDestroy {
   @Input() input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
@@ -67,14 +69,11 @@ export class SelectionComponent implements OnInit, OnDestroy {
     clearInterval();
   }
 
-  eventTest($event) {
-    console.log($event);
-  }
-
   /*************************************************************************/
   /************************* INPUT CHANGE DETECTION ************************/
   /*************************************************************************/
   onChangeSampleSize() {
+    // preserve this order
     this.input = this.randomNum.generate(this.sampleSize).map(x => ({
       value: x,
       status: SortStatus.UNSORTED
@@ -89,21 +88,17 @@ export class SelectionComponent implements OnInit, OnDestroy {
   runAll() {
     this.reset();
 
-    const speed = this.speed;
     // rerun sorting the model
-    this.sortInBackground(this.input, speed);
+    this.sortInBackground(this.input, this.speed);
     // grab the private model every rxjs interval
-    this.subs.sink = interval(speed)
+    this.subs.sink = interval(this.speed)
       .pipe(
         takeWhile(() => this.interval && this.res.sorted < this.input.length),
-        tap(() => {
-          this.result$.next(this.res);
-          this.cd.detectChanges();
-        }),
-        delay(speed / 2),
+        tap(() => this.result$.next(this.res)),
+        delay(this.speed / 2),
         tap(() => this.result$.next(this.res)),
         map(() => this.res),
-        delay(speed / 2)
+        delay(this.speed / 2)
       )
       .subscribe();
   }
@@ -113,16 +108,12 @@ export class SelectionComponent implements OnInit, OnDestroy {
     this.interval = null;
   }
 
-  private sortInBackground(
-    input: SortItem<number>[],
-    iterationDuration = 300,
-    from = 0
-  ) {
+  sortInBackground(input: SortItem<number>[], iterationDuration = 300) {
     // ! input has nested objects, so changing that object even via
     // ! Object.assign would also cause side effects
     const currentResult = {
       data: JSON.parse(JSON.stringify(input)),
-      sorted: from
+      sorted: 0
     };
 
     this.interval = setInterval(() => {
