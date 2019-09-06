@@ -8,6 +8,8 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 export class ControlsComponent implements OnInit {
   @Input() speed = 200;
   @Output() speedChangeEvent = new EventEmitter<number>();
+  @Input() sampleSize = 100;
+  @Output() sampleSizeChangeEvent = new EventEmitter<number>();
 
   constructor() {}
 

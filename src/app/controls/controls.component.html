@@ -13,22 +13,16 @@
   </div>
   <div class="form-group col pl-4">
     <!-- (change) fires once for type number -->
-    <!-- <label for="sample-size">Sample Size: {{ sampleSize }}</label> -->
-    <!-- <input
+    <label for="sample-size">Sample Size: {{ sampleSize }}</label>
+    <input
       id="sample-size"
       class="form-control-range"
-      [(ngModel)]="sampleSize"
-      (change)="onChangeSampleSize()"
+      [value]="sampleSize"
+      (change)="sampleSizeChangeEvent.emit($event.target.value)"
       type="range"
       min="10"
       max="500"
       #size
-    /> -->
-  </div>
-  <div class="col-12">
-    <!-- <button class="btn btn-success mr-2" (click)="runAll()">
-      Run from Beginning >>
-    </button>
-    <button class="btn btn-danger mr-2" (click)="stop()">Stop ||</button> -->
+    />
   </div>
 </div>
