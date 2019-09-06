@@ -1,12 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { BehaviorSubject, interval } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortItem } from 'src/app/classes/sort-item';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
-import { delay, takeWhile, tap } from 'rxjs/operators';
-import { SubSink } from 'subsink';
-import { SortData } from 'src/app/classes/sort-data';
 import { SortComponentInterface } from '../sort-component-interface';
+import { interval } from 'rxjs';
+import { takeWhile, tap, delay } from 'rxjs/operators';
 
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
@@ -20,47 +18,11 @@ import { SortComponentInterface } from '../sort-component-interface';
   templateUrl: './selection.component.html',
   styleUrls: ['./selection.component.scss']
 })
-export class SelectionComponent
-  implements SortComponentInterface, OnInit, OnDestroy {
-  input: SortItem<number>[] = [];
-  sampleSize = 100;
-  speed = 200;
-  result$ = new BehaviorSubject<SortData>({
-    data: [],
-    sorted: 0
-  });
-  res: SortData = null;
-  interval;
-  subs = new SubSink();
-
-  constructor(private randomNum: RandomNumService) {}
-
-  ngOnInit() {
-    this.sampleSize = 50;
-    this.onChangeSampleSize();
+export class SelectionComponent extends SortComponentInterface
+  implements OnInit, OnDestroy {
+  constructor(randomNumService: RandomNumService) {
+    super(randomNumService);
   }
-
-  ngOnDestroy() {
-    this.subs.unsubscribe();
-    clearInterval();
-  }
-
-  reset() {
-    clearInterval(this.interval);
-    this.interval = null;
-    this.subs.unsubscribe();
-  }
-
-  onChangeSampleSize() {
-    // preserve this order
-    this.input = this.randomNum.generate(this.sampleSize).map(x => ({
-      value: x,
-      status: SortStatus.UNSORTED
-    }));
-    this.reset();
-    this.result$.next({ data: this.input, sorted: 0 });
-  }
-
   runAll() {
     this.reset();
 
@@ -76,11 +38,6 @@ export class SelectionComponent
         delay(this.speed / 2)
       )
       .subscribe();
-  }
-
-  stop() {
-    clearInterval(this.interval);
-    this.interval = null;
   }
 
   /*************************************************************************/
