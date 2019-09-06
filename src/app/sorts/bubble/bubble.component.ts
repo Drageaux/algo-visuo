@@ -1,8 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { BehaviorSubject, interval } from 'rxjs';
 import { SortData } from 'src/app/classes/sort-data';
 import { SubSink } from 'subsink';
 import { SortComponentInterface } from '../sort-component-interface';
+import { SortItem } from 'src/app/classes/sort-item';
+import { RandomNumService } from 'src/app/services/random-num.service';
+import { SortStatus } from 'src/app/classes/sort-status.enum';
+import { takeWhile, tap, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-bubble',
@@ -10,7 +14,7 @@ import { SortComponentInterface } from '../sort-component-interface';
   styleUrls: ['./bubble.component.scss']
 })
 export class BubbleComponent
-  implements SortComponentInterface, OnInit, OnDestroy  {
+  implements SortComponentInterface, OnInit, OnDestroy {
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
@@ -28,7 +32,7 @@ export class BubbleComponent
     this.sampleSize = 50;
     this.onChangeSampleSize();
   }
-  
+
   ngOnDestroy() {
     this.subs.unsubscribe();
     clearInterval();
@@ -70,5 +74,12 @@ export class BubbleComponent
   stop() {
     clearInterval(this.interval);
     this.interval = null;
+  }
+
+  /*************************************************************************/
+  /**************************** BUBBLE SORT ONLY ***************************/
+  /*************************************************************************/
+  sortInBackground(input: SortItem<number>[], speed: number) {
+    throw new Error('Method not implemented.');
   }
 }
