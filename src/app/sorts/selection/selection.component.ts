@@ -107,6 +107,9 @@ export class SelectionComponent
     this.interval = null;
   }
 
+  /*************************************************************************/
+  /************************** SELECTION SORT ONLY **************************/
+  /*************************************************************************/
   sortInBackground(input: SortItem<number>[], iterationDuration = 300) {
     // ! input has nested objects, so changing that object even via
     // ! Object.assign would also cause side effects
@@ -141,9 +144,6 @@ export class SelectionComponent
     }, iterationDuration);
   }
 
-  /*************************************************************************/
-  /************************** SELECTION SORT ONLY **************************/
-  /*************************************************************************/
   private selectMinInd(unsortedSubArr: SortItem<number>[]) {
     let minInd = 0;
     for (
