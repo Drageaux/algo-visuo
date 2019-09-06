@@ -97,7 +97,6 @@ export class SelectionComponent
         tap(() => this.result$.next(this.res)),
         delay(this.speed / 2),
         tap(() => this.result$.next(this.res)),
-        map(() => this.res),
         delay(this.speed / 2)
       )
       .subscribe();
