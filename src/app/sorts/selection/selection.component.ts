@@ -53,16 +53,23 @@ export class SelectionComponent implements OnInit, OnDestroy {
     this.onChangeSampleSize();
   }
 
-  reset() {
-    this.removeRunningIntervals();
-  }
-
-  removeRunningIntervals() {
+  /*************************************************************************/
+  /************************** HELPER/CLEANUP CREW **************************/
+  /*************************************************************************/
+  private reset() {
     clearInterval(this.interval);
     this.interval = null;
     this.subs.unsubscribe();
   }
 
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+    clearInterval();
+  }
+
+  /*************************************************************************/
+  /************************* INPUT CHANGE DETECTION ************************/
+  /*************************************************************************/
   onChangeSampleSize() {
     this.input = this.randomNum.generate(this.sampleSize).map(x => ({
       value: x,
@@ -72,6 +79,9 @@ export class SelectionComponent implements OnInit, OnDestroy {
     this.result$.next({ data: this.input, sorted: 0 });
   }
 
+  /*************************************************************************/
+  /**************************** BUTTON HANDLERS ****************************/
+  /*************************************************************************/
   runAll() {
     this.reset();
 
@@ -92,6 +102,11 @@ export class SelectionComponent implements OnInit, OnDestroy {
         delay(speed / 2)
       )
       .subscribe();
+  }
+
+  stop() {
+    clearInterval(this.interval);
+    this.interval = null;
   }
 
   private sortInBackground(
@@ -132,11 +147,9 @@ export class SelectionComponent implements OnInit, OnDestroy {
     }, iterationDuration);
   }
 
-  stop() {
-    clearInterval(this.interval);
-    this.interval = null;
-  }
-
+  /*************************************************************************/
+  /************************** SELECTION SORT ONLY **************************/
+  /*************************************************************************/
   private selectMinInd(unsortedSubArr: SortItem<number>[]) {
     let minInd = 0;
     for (
@@ -149,10 +162,5 @@ export class SelectionComponent implements OnInit, OnDestroy {
       }
     }
     return minInd;
-  }
-
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
-    clearInterval();
   }
 }
