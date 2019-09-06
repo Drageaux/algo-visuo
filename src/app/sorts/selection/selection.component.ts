@@ -39,7 +39,7 @@ export class SelectionComponent
     this.sampleSize = 50;
     this.onChangeSampleSize();
   }
-  
+
   ngOnDestroy() {
     this.subs.unsubscribe();
     clearInterval();
