@@ -39,19 +39,16 @@ export class SelectionComponent
     this.sampleSize = 50;
     this.onChangeSampleSize();
   }
+  
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+    clearInterval();
+  }
 
-  /*************************************************************************/
-  /************************** HELPER/CLEANUP CREW **************************/
-  /*************************************************************************/
-  private reset() {
+  reset() {
     clearInterval(this.interval);
     this.interval = null;
     this.subs.unsubscribe();
-  }
-
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
-    clearInterval();
   }
 
   onChangeSampleSize() {

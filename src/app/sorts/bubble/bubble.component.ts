@@ -9,8 +9,9 @@ import { SortComponentInterface } from '../sort-component-interface';
   templateUrl: './bubble.component.html',
   styleUrls: ['./bubble.component.scss']
 })
-export class BubbleComponent implements SortComponentInterface, OnInit {
-  input: SortItem<number>[];
+export class BubbleComponent
+  implements SortComponentInterface, OnInit, OnDestroy  {
+  input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
   result$ = new BehaviorSubject<SortData>({
@@ -21,17 +22,53 @@ export class BubbleComponent implements SortComponentInterface, OnInit {
   interval;
   subs = new SubSink();
 
-  constructor() {}
+  constructor(private randomNum: RandomNumService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.sampleSize = 50;
+    this.onChangeSampleSize();
+  }
   
+  ngOnDestroy() {
+    this.subs.unsubscribe();
+    clearInterval();
+  }
+
+  reset() {
+    clearInterval(this.interval);
+    this.interval = null;
+    this.subs.unsubscribe();
+  }
+
   onChangeSampleSize() {
-    throw new Error("Method not implemented.");
+    // preserve this order
+    this.input = this.randomNum.generate(this.sampleSize).map(x => ({
+      value: x,
+      status: SortStatus.UNSORTED
+    }));
+    this.reset();
+    this.result$.next({ data: this.input, sorted: 0 });
   }
-  runAll(): void {
-    throw new Error("Method not implemented.");
+
+  runAll() {
+    this.reset();
+
+    // rerun sorting the model
+    this.sortInBackground(this.input, this.speed);
+    // grab the private model every rxjs interval
+    this.subs.sink = interval(this.speed)
+      .pipe(
+        takeWhile(() => this.interval && this.res.sorted < this.input.length),
+        tap(() => this.result$.next(this.res)),
+        delay(this.speed / 2),
+        tap(() => this.result$.next(this.res)),
+        delay(this.speed / 2)
+      )
+      .subscribe();
   }
-  stop(): void {
-    throw new Error("Method not implemented.");
+
+  stop() {
+    clearInterval(this.interval);
+    this.interval = null;
   }
 }
