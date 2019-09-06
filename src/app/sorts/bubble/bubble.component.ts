@@ -22,7 +22,7 @@ export class BubbleComponent extends SortComponentInterface
   /*************************************************************************/
   /**************************** BUBBLE SORT ONLY ***************************/
   /*************************************************************************/
-  private sortInBackground(input: SortItem<number>[], speed: number) {
+  sort(input: SortItem<number>[], speed: number) {
     throw new Error('Method not implemented.');
   }
 }

@@ -1,10 +1,11 @@
 import { SortItem } from '../classes/sort-item';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { SortData } from '../classes/sort-data';
 import { SubSink } from 'subsink';
 import { RandomNumService } from '../services/random-num.service';
 import { OnDestroy, OnInit } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
+import { takeWhile, tap, delay } from 'rxjs/operators';
 
 export abstract class SortComponentInterface implements OnInit, OnDestroy {
   input: SortItem<number>[] = [];
@@ -59,11 +60,28 @@ export abstract class SortComponentInterface implements OnInit, OnDestroy {
   /**************************** BUTTON HANDLERS ****************************/
   /*************************************************************************/
   runAll() {
-    console.log('Should replace with fancy sorting algorithms');
+    this.reset();
+
+    // rerun sorting the model
+    this.sort(this.input, this.speed);
+    // grab the private model every rxjs interval
+    this.subs.sink = interval(this.speed)
+      .pipe(
+        takeWhile(() => this.interval && this.res.sorted < this.input.length),
+        tap(() => this.result$.next(this.res)),
+        delay(this.speed / 2),
+        tap(() => this.result$.next(this.res)),
+        delay(this.speed / 2)
+      )
+      .subscribe();
   }
 
   stop() {
     clearInterval(this.interval);
     this.interval = null;
+  }
+
+  protected sort(input: SortItem<number>[], speed: number) {
+    throw new Error('Should override sort method');
   }
 }

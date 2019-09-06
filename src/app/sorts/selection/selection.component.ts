@@ -23,27 +23,11 @@ export class SelectionComponent extends SortComponentInterface
   constructor(randomNumService: RandomNumService) {
     super(randomNumService);
   }
-  runAll() {
-    this.reset();
-
-    // rerun sorting the model
-    this.sortInBackground(this.input, this.speed);
-    // grab the private model every rxjs interval
-    this.subs.sink = interval(this.speed)
-      .pipe(
-        takeWhile(() => this.interval && this.res.sorted < this.input.length),
-        tap(() => this.result$.next(this.res)),
-        delay(this.speed / 2),
-        tap(() => this.result$.next(this.res)),
-        delay(this.speed / 2)
-      )
-      .subscribe();
-  }
 
   /*************************************************************************/
   /************************** SELECTION SORT ONLY **************************/
   /*************************************************************************/
-  sortInBackground(input: SortItem<number>[], iterationDuration = 300) {
+  sort(input: SortItem<number>[], iterationDuration = 300) {
     // ! input has nested objects, so changing that object even via
     // ! Object.assign would also cause side effects
     const currentResult = {
