@@ -1,18 +1,9 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ChangeDetectorRef,
-  ViewChild,
-  HostListener,
-  AfterViewInit,
-  OnDestroy
-} from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { BehaviorSubject, interval } from 'rxjs';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortItem } from 'src/app/classes/sort-item';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
-import { delay, takeWhile, tap, map } from 'rxjs/operators';
+import { delay, takeWhile, tap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { SortData } from 'src/app/classes/sort-data';
 import { SortComponentInterface } from '../sort-component-interface';
@@ -31,24 +22,18 @@ import { SortComponentInterface } from '../sort-component-interface';
 })
 export class SelectionComponent
   implements SortComponentInterface, OnInit, OnDestroy {
-  @Input() input: SortItem<number>[] = [];
+  input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
-  @ViewChild('graph', { static: false }) graphEl;
   result$ = new BehaviorSubject<SortData>({
     data: [],
     sorted: 0
   });
+  res: SortData = null;
+  interval;
+  subs = new SubSink();
 
-  private subs = new SubSink();
-  // model
-  private res: SortData = null;
-  private interval;
-
-  constructor(
-    private randomNum: RandomNumService,
-    private cd: ChangeDetectorRef
-  ) {}
+  constructor(private randomNum: RandomNumService) {}
 
   ngOnInit() {
     this.sampleSize = 50;
@@ -69,9 +54,6 @@ export class SelectionComponent
     clearInterval();
   }
 
-  /*************************************************************************/
-  /************************* INPUT CHANGE DETECTION ************************/
-  /*************************************************************************/
   onChangeSampleSize() {
     // preserve this order
     this.input = this.randomNum.generate(this.sampleSize).map(x => ({
@@ -82,9 +64,6 @@ export class SelectionComponent
     this.result$.next({ data: this.input, sorted: 0 });
   }
 
-  /*************************************************************************/
-  /**************************** BUTTON HANDLERS ****************************/
-  /*************************************************************************/
   runAll() {
     this.reset();
 
