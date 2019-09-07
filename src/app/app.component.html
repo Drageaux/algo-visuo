@@ -1,5 +1,30 @@
 <nav class="navbar navbar-dark bg-dark">
   <span class="navbar-brand mb-0 h1">Algo Visuo</span>
+  <ul class="nav">
+    <li class="nav-item dropdown">
+      <a
+        id="sorts-dropdown"
+        class="nav-link dropdown-toggle"
+        data-toggle="dropdown"
+        href="#"
+        role="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        >Sorts</a
+      >
+      <div class="dropdown-menu text-left" aria-labelledby="sorts-dropdown">
+        <a class="dropdown-item nav-link" [routerLink]="['sorts/selection']"
+          >Selection Sort</a
+        >
+        <a class="dropdown-item nav-link" [routerLink]="['sorts/bubble']"
+          >Bubble Sort</a
+        >
+      </div>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#">Disabled</a>
+    </li>
+  </ul>
 </nav>
 
 <router-outlet></router-outlet>
