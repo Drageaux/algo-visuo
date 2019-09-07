@@ -25,47 +25,62 @@ export class BubbleComponent extends SortComponent
   /*************************************************************************/
   sort(input: SortItem<number>[], speed: number) {
     this.res.data = input;
-    console.log([...this.res.data].map(x => x.value));
+    this.res.sorted = 0;
+    let result = this.res.data;
+    console.log([...result].map(x => x.value));
     let count = 0;
 
+    let ready = true;
+    this.interval = setInterval(() => {
+      // ! need to skip if not finished with timed async logic
+      if (!ready) {
+        return;
+      }
+      ready = false;
+    }, speed);
+
     // originally O(n^2) because looping n times per n elements
-    for (let j = 0; j < this.res.data.length; j++) {
+    for (let j = 0; j < result.length; j++) {
       console.log('index', j);
-      // why this.res.data.length - j - 1?
+      // why result.length - j - 1?
       // because the largest has already bubbled to the last place
-      for (let k = 0; k < this.res.data.length - j - 1; k++) {
-        console.log(
-          this.res.data[k].value + ' vs ' + this.res.data[k + 1].value
-        );
+      for (let k = 0; k < result.length - this.res.sorted - 1; k++) {
+        // console.log(result[k].value + ' vs ' + result[k + 1].value);
+        console.log(`sorted: ${this.res.sorted}`);
 
         // 1. select swap target
-        if (this.res.data[k].value > this.res.data[k + 1].value) {
+        if (result[k].value > result[k + 1].value) {
           console.log('should swap');
           // 2. highlight preswap
-          this.res.data[k].status = SortStatus.SORTING;
-          this.res.data[k + 1].status = SortStatus.SORTING;
+          result[k].status = SortStatus.SORTING;
+          result[k + 1].status = SortStatus.SORTING;
 
           // 2a. cloning to trigger change detection
+          this.res.data = [...result];
 
           // 3. swap
-          const temp = this.res.data[k];
-          this.res.data[k] = this.res.data[k + 1];
-          this.res.data[k + 1] = temp;
-          console.log([...this.res.data]);
+          const temp = result[k];
+          result[k] = result[k + 1];
+          result[k + 1] = temp;
+          console.log([...result]);
+          this.res.data = [...result];
         }
 
         // 4. finalize highlight postswap
-        if (k + 1 === this.res.data.length - j - 1) {
+        if (k + 1 === result.length - j - 1) {
           console.log('hit the end');
-          this.res.data[k + 1].status = SortStatus.SORTED;
         }
-        // if (j )
 
         // 4a. cloning to trigger change detection
         count++;
       }
+
+      console.log(this.res.data.length - this.res.sorted - 1);
+      result[this.res.data.length - this.res.sorted - 1].status =
+        SortStatus.SORTED;
+      this.res.sorted++;
     }
-    console.log('count:', count, 'result:', this.res);
+    console.log('count:', count, 'result:', result);
 
     return;
   }
