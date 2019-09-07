@@ -34,7 +34,14 @@ export class SelectionComponent extends SortComponent
     };
     this.res = currentResult;
 
+    let ready = true;
     this.interval = setInterval(() => {
+      // ! need to skip if not finished with timed async logic
+      if (!ready) {
+        return;
+      }
+      ready = false;
+
       if (currentResult.sorted >= input.length - 1) {
         clearInterval(this.interval);
       }
@@ -51,7 +58,6 @@ export class SelectionComponent extends SortComponent
       // cloning to trigger change detection
       this.res.data = [...currentResult.data];
       this.res.sorted = currentResult.sorted;
-      // TODO: wait half a second
 
       setTimeout(() => {
         // swap
@@ -66,6 +72,7 @@ export class SelectionComponent extends SortComponent
         currentResult.sorted++;
         this.res.data = [...currentResult.data];
         this.res.sorted = currentResult.sorted;
+        ready = true;
       }, iterationDuration / 2);
     }, iterationDuration);
   }
