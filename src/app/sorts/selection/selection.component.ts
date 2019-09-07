@@ -45,30 +45,32 @@ export class SelectionComponent extends SortComponent
       if (currentResult.sorted >= input.length - 1) {
         clearInterval(this.interval);
       }
+      // 1. select swap target
       const minInd =
         currentResult.sorted +
         this.selectMinInd(
           currentResult.data.slice(currentResult.sorted, input.length)
         );
 
-      // highlight
+      // 2. highlight preswap
       currentResult.data[minInd].status = SortStatus.SORTING;
       currentResult.data[currentResult.sorted].status = SortStatus.SORTING;
 
-      // cloning to trigger change detection
+      // 2a. cloning to trigger change detection
       this.res.data = [...currentResult.data];
       this.res.sorted = currentResult.sorted;
 
       setTimeout(() => {
-        // swap
+        // 3. swap
         const temp = currentResult.data[minInd];
-
         currentResult.data[minInd] = currentResult.data[currentResult.sorted];
-        currentResult.data[minInd].status = SortStatus.UNSORTED;
         currentResult.data[currentResult.sorted] = temp;
+
+        // 4. finalize highlight postswap
+        currentResult.data[minInd].status = SortStatus.UNSORTED;
         currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
 
-        // cloning to trigger change detection
+        // 4a. cloning to trigger change detection
         currentResult.sorted++;
         this.res.data = [...currentResult.data];
         this.res.sorted = currentResult.sorted;
