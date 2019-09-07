@@ -31,8 +31,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
-    clearInterval();
+    this.reset();
   }
 
   /*************************************************************************/
