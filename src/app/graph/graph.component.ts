@@ -33,8 +33,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
 
   eSortStatus = SortStatus;
 
-  count = 0;
-
   ngOnInit() {}
 
   @HostListener('window:resize') onResize() {
@@ -55,10 +53,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.sampleSize) {
       this.onResize();
-    }
-    if (simpleChanges.data) {
-      this.count++;
-      console.log(this.count, simpleChanges.data);
     }
   }
 }
