@@ -1,20 +1,8 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ChangeDetectorRef,
-  ViewChild,
-  HostListener,
-  AfterViewInit,
-  OnDestroy
-} from '@angular/core';
-import { BehaviorSubject, interval } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortItem } from 'src/app/classes/sort-item';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
-import { delay, takeWhile, tap, map } from 'rxjs/operators';
-import { SubSink } from 'subsink';
-import { SortData } from 'src/app/classes/sort-data';
+import { SortComponent } from '../sort-component';
 
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
@@ -28,82 +16,21 @@ import { SortData } from 'src/app/classes/sort-data';
   templateUrl: './selection.component.html',
   styleUrls: ['./selection.component.scss']
 })
-export class SelectionComponent implements OnInit, OnDestroy {
-  @Input() input: SortItem<number>[] = [];
-  sampleSize = 100;
-  speed = 200;
-  @ViewChild('graph', { static: false }) graphEl;
-  result$ = new BehaviorSubject<SortData>({
-    data: [],
-    sorted: 0
-  });
-
-  private subs = new SubSink();
-  // model
-  private res: SortData = null;
-  private interval;
-
-  constructor(
-    private randomNum: RandomNumService,
-    private cd: ChangeDetectorRef
-  ) {}
-
-  ngOnInit() {
-    this.sampleSize = 50;
-    this.onChangeSampleSize();
+export class SelectionComponent extends SortComponent
+  implements OnInit, OnDestroy {
+  constructor(randomNumService: RandomNumService) {
+    super(randomNumService);
   }
 
-  reset() {
-    this.removeRunningIntervals();
-  }
-
-  removeRunningIntervals() {
-    clearInterval(this.interval);
-    this.interval = null;
-    this.subs.unsubscribe();
-  }
-
-  onChangeSampleSize() {
-    this.input = this.randomNum.generate(this.sampleSize).map(x => ({
-      value: x,
-      status: SortStatus.UNSORTED
-    }));
-    this.reset();
-    this.result$.next({ data: this.input, sorted: 0 });
-  }
-
-  runAll() {
-    this.reset();
-
-    const speed = this.speed;
-    // rerun sorting the model
-    this.sortInBackground(this.input, speed);
-    // grab the private model every rxjs interval
-    this.subs.sink = interval(speed)
-      .pipe(
-        takeWhile(() => this.interval && this.res.sorted < this.input.length),
-        tap(() => {
-          this.result$.next(this.res);
-          this.cd.detectChanges();
-        }),
-        delay(speed / 2),
-        tap(() => this.result$.next(this.res)),
-        map(() => this.res),
-        delay(speed / 2)
-      )
-      .subscribe();
-  }
-
-  private sortInBackground(
-    input: SortItem<number>[],
-    iterationDuration = 300,
-    from = 0
-  ) {
+  /*************************************************************************/
+  /************************** SELECTION SORT ONLY **************************/
+  /*************************************************************************/
+  sort(input: SortItem<number>[], iterationDuration = 300) {
     // ! input has nested objects, so changing that object even via
     // ! Object.assign would also cause side effects
     const currentResult = {
       data: JSON.parse(JSON.stringify(input)),
-      sorted: from
+      sorted: 0
     };
 
     this.interval = setInterval(() => {
@@ -132,11 +59,6 @@ export class SelectionComponent implements OnInit, OnDestroy {
     }, iterationDuration);
   }
 
-  stop() {
-    clearInterval(this.interval);
-    this.interval = null;
-  }
-
   private selectMinInd(unsortedSubArr: SortItem<number>[]) {
     let minInd = 0;
     for (
@@ -149,10 +71,5 @@ export class SelectionComponent implements OnInit, OnDestroy {
       }
     }
     return minInd;
-  }
-
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
-    clearInterval();
   }
 }
