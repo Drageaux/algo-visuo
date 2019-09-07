@@ -2,9 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortItem } from 'src/app/classes/sort-item';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
-import { SortComponentInterface } from '../sort-component-interface';
-import { interval } from 'rxjs';
-import { takeWhile, tap, delay } from 'rxjs/operators';
+import { SortComponent } from '../sort-component';
 
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
@@ -18,7 +16,7 @@ import { takeWhile, tap, delay } from 'rxjs/operators';
   templateUrl: './selection.component.html',
   styleUrls: ['./selection.component.scss']
 })
-export class SelectionComponent extends SortComponentInterface
+export class SelectionComponent extends SortComponent
   implements OnInit, OnDestroy {
   constructor(randomNumService: RandomNumService) {
     super(randomNumService);

@@ -1,19 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BehaviorSubject, interval } from 'rxjs';
-import { SortData } from 'src/app/classes/sort-data';
-import { SubSink } from 'subsink';
-import { SortComponentInterface } from '../sort-component-interface';
+import { SortComponent } from '../sort-component';
 import { SortItem } from 'src/app/classes/sort-item';
 import { RandomNumService } from 'src/app/services/random-num.service';
-import { SortStatus } from 'src/app/classes/sort-status.enum';
-import { takeWhile, tap, delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-bubble',
   templateUrl: './bubble.component.html',
   styleUrls: ['./bubble.component.scss']
 })
-export class BubbleComponent extends SortComponentInterface
+export class BubbleComponent extends SortComponent
   implements OnInit, OnDestroy {
   constructor(private randomNumService: RandomNumService) {
     super(randomNumService);

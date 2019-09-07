@@ -7,7 +7,7 @@ import { OnDestroy, OnInit } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
 import { takeWhile, tap, delay } from 'rxjs/operators';
 
-export abstract class SortComponentInterface implements OnInit, OnDestroy {
+export abstract class SortComponent implements OnInit, OnDestroy {
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
