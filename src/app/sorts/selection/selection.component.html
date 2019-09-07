@@ -15,9 +15,9 @@
   </div>
 
   <app-graph
-    *ngIf="result$ | async as result"
-    [data]="result.data"
-    [sorted]="result.sorted"
+    *ngIf="res"
+    [data]="res.data"
+    [sorted]="res.sorted"
     [sampleSize]="sampleSize"
   ></app-graph>
 </div>

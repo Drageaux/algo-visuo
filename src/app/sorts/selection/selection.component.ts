@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortItem } from 'src/app/classes/sort-item';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
@@ -18,8 +18,8 @@ import { SortComponent } from '../sort-component';
 })
 export class SelectionComponent extends SortComponent
   implements OnInit, OnDestroy {
-  constructor(randomNumService: RandomNumService) {
-    super(randomNumService);
+  constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
+    super(randomNumService, cd);
   }
 
   /*************************************************************************/
@@ -32,6 +32,7 @@ export class SelectionComponent extends SortComponent
       data: JSON.parse(JSON.stringify(input)),
       sorted: 0
     };
+    this.res = currentResult;
 
     this.interval = setInterval(() => {
       if (currentResult.sorted >= input.length - 1) {
@@ -46,16 +47,26 @@ export class SelectionComponent extends SortComponent
       // highlight
       currentResult.data[minInd].status = SortStatus.SORTING;
       currentResult.data[currentResult.sorted].status = SortStatus.SORTING;
-      this.res = currentResult;
 
-      // swap
-      const temp = currentResult.data[minInd];
-      currentResult.data[minInd] = currentResult.data[currentResult.sorted];
-      currentResult.data[currentResult.sorted] = temp;
-      currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
+      // cloning to trigger change detection
+      this.res.data = [...currentResult.data];
+      this.res.sorted = currentResult.sorted;
+      // TODO: wait half a second
 
-      currentResult.sorted++;
-      this.res = currentResult;
+      setTimeout(() => {
+        // swap
+        const temp = currentResult.data[minInd];
+
+        currentResult.data[minInd] = currentResult.data[currentResult.sorted];
+        currentResult.data[minInd].status = SortStatus.UNSORTED;
+        currentResult.data[currentResult.sorted] = temp;
+        currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
+
+        // cloning to trigger change detection
+        currentResult.sorted++;
+        this.res.data = [...currentResult.data];
+        this.res.sorted = currentResult.sorted;
+      }, iterationDuration / 2);
     }, iterationDuration);
   }
 
