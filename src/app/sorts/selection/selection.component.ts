@@ -58,7 +58,6 @@ export class SelectionComponent extends SortComponent
 
       // 2a. cloning to trigger change detection
       this.res.data = [...currentResult.data];
-      this.res.sorted = currentResult.sorted;
 
       setTimeout(() => {
         // 3. swap
