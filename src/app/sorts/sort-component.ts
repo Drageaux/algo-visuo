@@ -11,11 +11,15 @@ export abstract class SortComponent implements OnInit, OnDestroy {
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
+  // history of data
+  history: Map<number, SortData>;
+  stateId = 0;
   // protected model
   res: SortData = {
     data: [],
     sorted: 0
   };
+  result$ = new BehaviorSubject<SortData>(null);
   interval;
   // subscription cleaner
   subs = new SubSink();
@@ -41,6 +45,8 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     clearInterval(this.interval);
     this.interval = null;
     this.subs.unsubscribe();
+    this.history = new Map();
+    this.stateId = 0;
   }
 
   /*************************************************************************/
@@ -54,6 +60,8 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     }));
     this.reset();
     this.res = { data: this.input, sorted: 0 };
+    this.history.set(this.stateId, { data: this.input, sorted: 0 });
+    this.result$.next(this.history.get(this.stateId));
   }
 
   /*************************************************************************/
@@ -64,6 +72,18 @@ export abstract class SortComponent implements OnInit, OnDestroy {
 
     // rerun sorting the model
     this.sort(this.input, this.speed);
+
+    // TODO: start animation when done sorting
+    let currState = 0;
+    this.subs.sink = interval(this.speed / 2)
+      .pipe(
+        takeWhile(() => this.history.get(currState) != null),
+        tap(() => {
+          this.result$.next(this.history.get(currState));
+          currState++;
+        })
+      )
+      .subscribe();
   }
 
   stop() {
