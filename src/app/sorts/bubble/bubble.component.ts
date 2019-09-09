@@ -24,23 +24,9 @@ export class BubbleComponent extends SortComponent
   /*************************************************************************/
   /**************************** BUBBLE SORT ONLY ***************************/
   /*************************************************************************/
-  sort(input: SortItem<number>[], speed: number) {
-    const currentResult = {
-      data: JSON.parse(JSON.stringify(input)),
-      sorted: 0
-    };
-    this.history.set(this.stateId, currentResult);
-    // console.log([...currentResult.data].map(x => x.value));
+  sort() {
+    const currentResult = this.history.get(0);
     let count = 0;
-
-    let ready = true;
-    this.interval = setInterval(() => {
-      // ! need to skip if not finished with timed async logic
-      if (!ready) {
-        return;
-      }
-      ready = false;
-    }, speed);
 
     // originally O(n^2) because looping n times per n elements
     for (let j = 0; j < currentResult.data.length; j++) {
@@ -49,7 +35,7 @@ export class BubbleComponent extends SortComponent
       // because the largest has already bubbled to the last place
       for (
         let k = 0;
-        k < currentResult.data.length - this.res.sorted - 1;
+        k < currentResult.data.length - currentResult.sorted - 1;
         k++
       ) {
         // 1. select swap target
@@ -65,8 +51,6 @@ export class BubbleComponent extends SortComponent
           const temp = currentResult.data[k];
           currentResult.data[k] = currentResult.data[k + 1];
           currentResult.data[k + 1] = temp;
-          // console.log([...currentResult.data]);
-          this.res.data = [...currentResult.data];
           swapped = true;
           this.pushState(currentResult);
         }
@@ -90,8 +74,7 @@ export class BubbleComponent extends SortComponent
         // }
       }
 
-      console.log(this.res.data.length - this.res.sorted - 1);
-      // currentResult.data[this.res.data.length - this.res.sorted - 1].status =
+      // currentResult.data[currentResult.data.length - currentResult.sorted - 1].status =
       //   SortStatus.SORTED;
       // currentResult.sorted += 1;
       // this.pushState(currentResult);
@@ -103,12 +86,4 @@ export class BubbleComponent extends SortComponent
   }
 
   swap(a, b) {}
-
-  pushState(sData: SortData) {
-    this.stateId++;
-    this.history.set(this.stateId, {
-      data: [...sData.data],
-      sorted: sData.sorted
-    });
-  }
 }

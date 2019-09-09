@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 import { RandomNumService } from '../services/random-num.service';
 import { OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
-import { takeWhile, tap, delay, skip } from 'rxjs/operators';
+import { takeWhile, tap, delay, skip, map } from 'rxjs/operators';
 
 export abstract class SortComponent implements OnInit, OnDestroy {
   input: SortItem<number>[] = [];
@@ -47,6 +47,22 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
     this.history = new Map();
     this.stateId = 0;
+
+    const initData = {
+      data: this.input,
+      sorted: 0
+    };
+    this.history.set(0, this.deepCopy(initData));
+    this.result$.next(this.history.get(0));
+  }
+
+  deepCopy(srcObj) {
+    return JSON.parse(JSON.stringify(srcObj));
+  }
+
+  pushState(sData: SortData) {
+    this.stateId++;
+    this.history.set(this.stateId, this.deepCopy(sData));
   }
 
   /*************************************************************************/
@@ -60,8 +76,6 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     }));
     this.reset();
     this.res = { data: this.input, sorted: 0 };
-    this.history.set(this.stateId, { data: this.input, sorted: 0 });
-    this.result$.next(this.history.get(this.stateId));
   }
 
   /*************************************************************************/
@@ -77,13 +91,15 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     let currState = 0;
     this.subs.sink = interval(this.speed / 2)
       .pipe(
-        takeWhile(() => this.history.get(currState) != null),
-        tap(() => {
-          this.result$.next(this.history.get(currState));
+        map(() => this.history.get(currState)),
+        takeWhile(x => x != null),
+        tap(x => {
+          this.result$.next(x);
+          console.log(this.history);
           currState++;
         })
       )
-      .subscribe();
+      .subscribe(x => console.log(x.data.map(v => v.value)));
   }
 
   stop() {
@@ -91,7 +107,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.interval = null;
   }
 
-  protected sort(input: SortItem<number>[], speed: number) {
+  protected sort(input?: SortItem<number>[], speed?: number) {
     throw new Error('Should override sort method');
   }
 }
