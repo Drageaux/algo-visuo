@@ -3,26 +3,27 @@ import { BehaviorSubject, interval } from 'rxjs';
 import { SortData } from '../classes/sort-data';
 import { SubSink } from 'subsink';
 import { RandomNumService } from '../services/random-num.service';
-import { OnDestroy, OnInit } from '@angular/core';
+import { OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
-import { takeWhile, tap, delay } from 'rxjs/operators';
+import { takeWhile, tap, map } from 'rxjs/operators';
 
 export abstract class SortComponent implements OnInit, OnDestroy {
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
-  // observable that emits the protected model
-  result$ = new BehaviorSubject<SortData>({
-    data: [],
-    sorted: 0
-  });
+  // history of data
+  history: Map<number, SortData>;
+  stateId = 0;
   // protected model
-  res: SortData = null;
+  result$ = new BehaviorSubject<SortData>(null);
   interval;
   // subscription cleaner
   subs = new SubSink();
 
-  constructor(private randomNum: RandomNumService) {}
+  constructor(
+    private randomNum: RandomNumService,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.sampleSize = 50;
@@ -30,8 +31,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
-    clearInterval();
+    this.reset();
   }
 
   /*************************************************************************/
@@ -41,6 +41,28 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     clearInterval(this.interval);
     this.interval = null;
     this.subs.unsubscribe();
+    this.history = new Map();
+    this.stateId = 0;
+
+    const initData = {
+      data: this.deepCopy(this.input),
+      sorted: 0
+    };
+    this.history.set(0, initData);
+    this.result$.next(this.history.get(0));
+  }
+
+  deepCopy(srcObj) {
+    return JSON.parse(JSON.stringify(srcObj));
+  }
+
+  pushState(sData: SortData) {
+    this.stateId++;
+    this.history.set(this.stateId, this.deepCopy(sData));
+  }
+
+  printArray(arr: SortItem<number>[], wStatus = false) {
+    console.log(arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`));
   }
 
   /*************************************************************************/
@@ -53,7 +75,6 @@ export abstract class SortComponent implements OnInit, OnDestroy {
       status: SortStatus.UNSORTED
     }));
     this.reset();
-    this.result$.next({ data: this.input, sorted: 0 });
   }
 
   /*************************************************************************/
@@ -63,15 +84,18 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.reset();
 
     // rerun sorting the model
-    this.sort(this.input, this.speed);
-    // grab the private model every rxjs interval
-    this.subs.sink = interval(this.speed)
+    this.sort(this.input);
+
+    // TODO: start animation when done sorting
+    let currState = 0;
+    this.subs.sink = interval(this.speed / 2)
       .pipe(
-        takeWhile(() => this.interval && this.res.sorted < this.input.length),
-        tap(() => this.result$.next(this.res)),
-        delay(this.speed / 2),
-        tap(() => this.result$.next(this.res)),
-        delay(this.speed / 2)
+        map(() => this.history.get(currState)),
+        takeWhile(x => x != null),
+        tap(x => {
+          this.result$.next(x);
+          currState++;
+        })
       )
       .subscribe();
   }
@@ -81,7 +105,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.interval = null;
   }
 
-  protected sort(input: SortItem<number>[], speed: number) {
+  protected sort(input?: SortItem<number>[]) {
     throw new Error('Should override sort method');
   }
 }

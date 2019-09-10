@@ -22,6 +22,7 @@ import { SortData } from '../classes/sort-data';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
+  constructor(private cd: ChangeDetectorRef) {}
   // ! destructured the data and sort properties to trigger change detection
   // ! because a nested object won't
   @Input() data: SortItem<number>[]; // required
@@ -31,8 +32,6 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
   barWidth = '1px';
 
   eSortStatus = SortStatus;
-
-  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit() {}
 
@@ -54,6 +53,9 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
   ngOnChanges(simpleChanges: SimpleChanges) {
     if (simpleChanges.sampleSize) {
       this.onResize();
+    }
+    if (simpleChanges.data) {
+      // console.log(simpleChanges.data);
     }
   }
 }
