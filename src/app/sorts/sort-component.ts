@@ -5,7 +5,7 @@ import { SubSink } from 'subsink';
 import { RandomNumService } from '../services/random-num.service';
 import { OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
-import { takeWhile, tap, delay, skip, map } from 'rxjs/operators';
+import { takeWhile, tap, map } from 'rxjs/operators';
 
 export abstract class SortComponent implements OnInit, OnDestroy {
   input: SortItem<number>[] = [];
@@ -15,10 +15,6 @@ export abstract class SortComponent implements OnInit, OnDestroy {
   history: Map<number, SortData>;
   stateId = 0;
   // protected model
-  res: SortData = {
-    data: [],
-    sorted: 0
-  };
   result$ = new BehaviorSubject<SortData>(null);
   interval;
   // subscription cleaner
@@ -79,7 +75,6 @@ export abstract class SortComponent implements OnInit, OnDestroy {
       status: SortStatus.UNSORTED
     }));
     this.reset();
-    this.res = { data: this.input, sorted: 0 };
   }
 
   /*************************************************************************/
