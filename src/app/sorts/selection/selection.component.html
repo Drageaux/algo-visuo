@@ -3,7 +3,7 @@
 
   <app-controls
     [speed]="speed"
-    (speedChangeEvent)="speed = $event"
+    (speedChangeEvent)="speed = $event; period$.next(speed)"
     [sampleSize]="sampleSize"
     (sampleSizeChangeEvent)="sampleSize = $event; onChangeSampleSize()"
   ></app-controls>

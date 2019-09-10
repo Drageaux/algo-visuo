@@ -16,11 +16,6 @@ export class BubbleComponent extends SortComponent
     super(randomNumService, cd);
   }
 
-  ngOnInit() {
-    this.sampleSize = 10;
-    this.onChangeSampleSize();
-  }
-
   /*************************************************************************/
   /**************************** BUBBLE SORT ONLY ***************************/
   /*************************************************************************/
@@ -29,7 +24,6 @@ export class BubbleComponent extends SortComponent
       data: this.deepCopy(input),
       sorted: 0
     };
-    let count = 0;
 
     // originally O(n^2) because looping n times per n elements
     for (let j = 0; j < currentResult.data.length; j++) {
@@ -46,8 +40,6 @@ export class BubbleComponent extends SortComponent
           // 2. highlight preswap
           currentResult.data[k].status = SortStatus.SORTING;
           currentResult.data[k + 1].status = SortStatus.SORTING;
-
-          // 2a. cloning to trigger change detection
           this.pushState(currentResult);
 
           // 3. swap
@@ -61,16 +53,12 @@ export class BubbleComponent extends SortComponent
 
         // 4. finalize highlight postswap
         if (k + 1 === currentResult.data.length - j - 1) {
-          console.log('hit the end');
           currentResult.data[k + 1].status = SortStatus.SORTED;
           this.pushState(currentResult);
         } else if (k === currentResult.data.length - j - 1) {
           currentResult.data[k].status = SortStatus.SORTED;
           this.pushState(currentResult);
         }
-
-        // 4a. cloning to trigger change detection
-        count++;
       }
 
       currentResult.data[
@@ -91,10 +79,6 @@ export class BubbleComponent extends SortComponent
     currentResult.sorted = currentResult.data.length;
     this.pushState(currentResult);
 
-    count++;
-
-    console.log('count:', count, 'result:', currentResult.data);
-    console.log(this.stateId);
     return;
   }
 }

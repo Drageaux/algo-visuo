@@ -99,7 +99,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
           currState++;
         })
       )
-      .subscribe(x => console.log(x));
+      .subscribe();
     this.period$.next(this.speed);
   }
 

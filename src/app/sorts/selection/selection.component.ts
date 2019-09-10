@@ -29,7 +29,7 @@ export class SelectionComponent extends SortComponent
     // ! input has nested objects, so changing that object even via
     // ! Object.assign would also cause side effects
     const currentResult = {
-      data: JSON.parse(JSON.stringify(input)),
+      data: this.deepCopy(input),
       sorted: 0
     };
 
@@ -47,8 +47,6 @@ export class SelectionComponent extends SortComponent
       // 2. highlight preswap
       currentResult.data[minInd].status = SortStatus.SORTING;
       currentResult.data[currentResult.sorted].status = SortStatus.SORTING;
-
-      // 2a. cloning to trigger change detection
       this.pushState(currentResult);
 
       // 3. swap
@@ -59,8 +57,6 @@ export class SelectionComponent extends SortComponent
       // 4. finalize highlight postswap
       currentResult.data[minInd].status = SortStatus.UNSORTED;
       currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
-
-      // 4a. cloning to trigger change detection
       currentResult.sorted++;
       this.pushState(currentResult);
     }
