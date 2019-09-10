@@ -1,0 +1,15 @@
+@import '~bootstrap/scss/_functions';
+@import '~bootstrap/scss/_variables';
+
+.graph-container {
+  padding: 1rem;
+  border: 1px solid $gray-400;
+  margin: 1rem 0;
+}
+
+.graph {
+  height: 75vh;
+  div {
+    align-self: flex-end;
+  }
+}
