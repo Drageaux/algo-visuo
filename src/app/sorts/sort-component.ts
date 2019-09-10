@@ -49,16 +49,10 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.stateId = 0;
 
     const initData = {
-      data: this.deepCopy([...this.input]),
+      data: this.deepCopy(this.input),
       sorted: 0
     };
-
-    this.history.set(0, this.deepCopy(initData));
-
-    const test = this.history.get(0);
-    for (let i = 0; i < initData.data.length; i++) {
-      console.log(`is same object? ${this.input[i] === test[i]}`);
-    }
+    this.history.set(0, initData);
     this.result$.next(this.history.get(0));
   }
 
@@ -101,11 +95,10 @@ export abstract class SortComponent implements OnInit, OnDestroy {
         takeWhile(x => x != null),
         tap(x => {
           this.result$.next(x);
-          console.log(this.history);
           currState++;
         })
       )
-      .subscribe(x => console.log(x.data.map(v => v.value)));
+      .subscribe(x => console.log(x.data.map(v => v.value + '|' + v.status)));
   }
 
   stop() {

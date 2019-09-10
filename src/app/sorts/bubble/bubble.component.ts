@@ -72,13 +72,29 @@ export class BubbleComponent extends SortComponent
         // 4a. cloning to trigger change detection
         count++;
       }
-      // break out of the inner loop if it didn't swap on first run
+
+      currentResult.data[
+        currentResult.data.length - currentResult.sorted - 1
+      ].status = SortStatus.SORTED;
+      currentResult.sorted += 1;
+      this.pushState(currentResult);
+
+      // optimize: break loop if it didn't swap on run
       if (!swapped) {
         break;
       }
     }
-    console.log('count:', count, 'result:', currentResult.data);
 
+    // ! last iteration is needed for our own highlighting purpose
+    // assuming everything worked
+    currentResult.data.forEach(x => (x.status = SortStatus.SORTED));
+    currentResult.sorted = currentResult.data.length;
+    this.pushState(currentResult);
+
+    count++;
+
+    console.log('count:', count, 'result:', currentResult.data);
+    console.log(this.stateId);
     return;
   }
 
