@@ -17,6 +17,8 @@ import { SortComponent } from '../sort-component';
   styleUrls: ['../sort-component.scss']
 })
 export class SelectionComponent extends SortComponent {
+  title = 'Selection Sort';
+
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
     super(randomNumService, cd);
   }

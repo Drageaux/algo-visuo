@@ -11,6 +11,8 @@ import { SortData } from 'src/app/classes/sort-data';
   styleUrls: ['../sort-component.scss']
 })
 export class BubbleComponent extends SortComponent {
+  title = 'Bubble Sort';
+
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
     super(randomNumService, cd);
   }
