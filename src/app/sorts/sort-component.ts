@@ -1,16 +1,17 @@
 import { SortItem } from '../classes/sort-item';
-import { BehaviorSubject, interval } from 'rxjs';
+import { BehaviorSubject, interval, Subject } from 'rxjs';
 import { SortData } from '../classes/sort-data';
 import { SubSink } from 'subsink';
 import { RandomNumService } from '../services/random-num.service';
 import { OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
-import { takeWhile, tap, map } from 'rxjs/operators';
+import { takeWhile, tap, map, switchMap } from 'rxjs/operators';
 
 export abstract class SortComponent implements OnInit, OnDestroy {
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
+  period$ = new BehaviorSubject<number>(this.speed);
   // history of data
   history: Map<number, SortData>;
   stateId = 0;
@@ -88,8 +89,9 @@ export abstract class SortComponent implements OnInit, OnDestroy {
 
     // TODO: start animation when done sorting
     let currState = 0;
-    this.subs.sink = interval(this.speed / 2)
+    this.subs.sink = this.period$
       .pipe(
+        switchMap(speed => interval(speed / 2)),
         map(() => this.history.get(currState)),
         takeWhile(x => x != null),
         tap(x => {
@@ -97,7 +99,8 @@ export abstract class SortComponent implements OnInit, OnDestroy {
           currState++;
         })
       )
-      .subscribe();
+      .subscribe(x => console.log(x));
+    this.period$.next(this.speed);
   }
 
   stop() {
