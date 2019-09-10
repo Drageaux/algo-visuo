@@ -85,7 +85,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.reset();
 
     // rerun sorting the model
-    this.sort(this.input, this.speed);
+    this.sort(this.input);
 
     // TODO: start animation when done sorting
     let currState = 0;
@@ -98,7 +98,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
           currState++;
         })
       )
-      .subscribe(x => console.log(x.data.map(v => v.value + '|' + v.status)));
+      .subscribe();
   }
 
   stop() {
@@ -106,7 +106,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.interval = null;
   }
 
-  protected sort(input?: SortItem<number>[], speed?: number) {
+  protected sort(input?: SortItem<number>[]) {
     throw new Error('Should override sort method');
   }
 }

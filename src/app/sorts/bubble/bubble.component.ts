@@ -79,7 +79,7 @@ export class BubbleComponent extends SortComponent
       currentResult.sorted += 1;
       this.pushState(currentResult);
 
-      // optimize: break loop if it didn't swap on run
+      // optimize: break loop if it didn't swap by inner loop
       if (!swapped) {
         break;
       }
@@ -97,6 +97,4 @@ export class BubbleComponent extends SortComponent
     console.log(this.stateId);
     return;
   }
-
-  swap(a, b) {}
 }
