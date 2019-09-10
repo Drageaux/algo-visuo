@@ -65,6 +65,10 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.history.set(this.stateId, this.deepCopy(sData));
   }
 
+  printArray(arr: SortItem<number>[], wStatus = false) {
+    console.log(arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`));
+  }
+
   /*************************************************************************/
   /************************* INPUT CHANGE DETECTION ************************/
   /*************************************************************************/

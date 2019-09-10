@@ -25,23 +25,15 @@ export class SelectionComponent extends SortComponent
   /*************************************************************************/
   /************************** SELECTION SORT ONLY **************************/
   /*************************************************************************/
-  sort(input: SortItem<number>[], iterationDuration = 300) {
+  sort(input: SortItem<number>[]) {
     // ! input has nested objects, so changing that object even via
     // ! Object.assign would also cause side effects
     const currentResult = {
       data: JSON.parse(JSON.stringify(input)),
       sorted: 0
     };
-    this.res = currentResult;
 
-    let ready = true;
-    this.interval = setInterval(() => {
-      // ! need to skip if not finished with timed async logic
-      if (!ready) {
-        return;
-      }
-      ready = false;
-
+    while (currentResult.sorted < input.length) {
       if (currentResult.sorted >= input.length - 1) {
         clearInterval(this.interval);
       }
@@ -57,25 +49,21 @@ export class SelectionComponent extends SortComponent
       currentResult.data[currentResult.sorted].status = SortStatus.SORTING;
 
       // 2a. cloning to trigger change detection
-      this.res.data = [...currentResult.data];
+      this.pushState(currentResult);
 
-      setTimeout(() => {
-        // 3. swap
-        const temp = currentResult.data[minInd];
-        currentResult.data[minInd] = currentResult.data[currentResult.sorted];
-        currentResult.data[currentResult.sorted] = temp;
+      // 3. swap
+      const temp = currentResult.data[minInd];
+      currentResult.data[minInd] = currentResult.data[currentResult.sorted];
+      currentResult.data[currentResult.sorted] = temp;
 
-        // 4. finalize highlight postswap
-        currentResult.data[minInd].status = SortStatus.UNSORTED;
-        currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
+      // 4. finalize highlight postswap
+      currentResult.data[minInd].status = SortStatus.UNSORTED;
+      currentResult.data[currentResult.sorted].status = SortStatus.SORTED;
 
-        // 4a. cloning to trigger change detection
-        currentResult.sorted++;
-        this.res.data = [...currentResult.data];
-        this.res.sorted = currentResult.sorted;
-        ready = true;
-      }, iterationDuration / 2);
-    }, iterationDuration);
+      // 4a. cloning to trigger change detection
+      currentResult.sorted++;
+      this.pushState(currentResult);
+    }
   }
 
   private selectMinInd(unsortedSubArr: SortItem<number>[]) {
