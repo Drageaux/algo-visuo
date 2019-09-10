@@ -108,7 +108,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.interval = null;
   }
 
-  protected sort(input?: SortItem<number>[]) {
+  protected sort(input: SortItem<number>[]) {
     throw new Error('Should override sort method');
   }
 }

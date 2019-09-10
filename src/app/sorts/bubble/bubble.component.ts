@@ -10,14 +10,13 @@ import { SortData } from 'src/app/classes/sort-data';
   templateUrl: './bubble.component.html',
   styleUrls: ['./bubble.component.scss']
 })
-export class BubbleComponent extends SortComponent
-  implements OnInit, OnDestroy {
+export class BubbleComponent extends SortComponent {
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
     super(randomNumService, cd);
   }
 
   /*************************************************************************/
-  /**************************** BUBBLE SORT ONLY ***************************/
+  /****************************** BUBBLE SORT ******************************/
   /*************************************************************************/
   sort(input: SortItem<number>[]) {
     const currentResult: SortData = {
