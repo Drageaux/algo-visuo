@@ -8,6 +8,7 @@ import { SortStatus } from '../classes/sort-status.enum';
 import { takeWhile, tap, map, switchMap } from 'rxjs/operators';
 
 export abstract class SortComponent implements OnInit, OnDestroy {
+  title = '';
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;

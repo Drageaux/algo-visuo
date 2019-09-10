@@ -13,8 +13,8 @@ import { SortComponent } from '../sort-component';
  */
 @Component({
   selector: 'app-selection',
-  templateUrl: './selection.component.html',
-  styleUrls: ['./selection.component.scss']
+  templateUrl: '../sort-component.html',
+  styleUrls: ['../sort-component.scss']
 })
 export class SelectionComponent extends SortComponent {
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {

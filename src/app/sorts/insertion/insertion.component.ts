@@ -5,10 +5,12 @@ import { RandomNumService } from 'src/app/services/random-num.service';
 
 @Component({
   selector: 'app-insertion',
-  templateUrl: './insertion.component.html',
-  styleUrls: ['./insertion.component.scss']
+  templateUrl: '../sort-component.html',
+  styleUrls: ['../sort-component.scss']
 })
 export class InsertionComponent extends SortComponent {
+  title = 'Insertion Sort';
+
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
     super(randomNumService, cd);
   }

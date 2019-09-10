@@ -7,8 +7,8 @@ import { SortData } from 'src/app/classes/sort-data';
 
 @Component({
   selector: 'app-bubble',
-  templateUrl: './bubble.component.html',
-  styleUrls: ['./bubble.component.scss']
+  templateUrl: '../sort-component.html',
+  styleUrls: ['../sort-component.scss']
 })
 export class BubbleComponent extends SortComponent {
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
