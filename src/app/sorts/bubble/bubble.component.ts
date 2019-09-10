@@ -24,8 +24,11 @@ export class BubbleComponent extends SortComponent
   /*************************************************************************/
   /**************************** BUBBLE SORT ONLY ***************************/
   /*************************************************************************/
-  sort() {
-    const currentResult = this.history.get(0);
+  sort(input: SortItem<number>[]) {
+    const currentResult: SortData = {
+      data: this.deepCopy(input),
+      sorted: 0
+    };
     let count = 0;
 
     // originally O(n^2) because looping n times per n elements
@@ -51,8 +54,9 @@ export class BubbleComponent extends SortComponent
           const temp = currentResult.data[k];
           currentResult.data[k] = currentResult.data[k + 1];
           currentResult.data[k + 1] = temp;
+          currentResult.data[k].status = SortStatus.UNSORTED;
+          currentResult.data[k + 1].status = SortStatus.UNSORTED;
           swapped = true;
-          this.pushState(currentResult);
         }
 
         // 4. finalize highlight postswap
@@ -67,21 +71,14 @@ export class BubbleComponent extends SortComponent
 
         // 4a. cloning to trigger change detection
         count++;
-
-        // break out of the inner loop if it didn't swap on first run
-        // if (!swapped) {
-        //   break;
-        // }
       }
-
-      // currentResult.data[currentResult.data.length - currentResult.sorted - 1].status =
-      //   SortStatus.SORTED;
-      // currentResult.sorted += 1;
-      // this.pushState(currentResult);
+      // break out of the inner loop if it didn't swap on first run
+      if (!swapped) {
+        break;
+      }
     }
     console.log('count:', count, 'result:', currentResult.data);
 
-    console.log(this.history);
     return;
   }
 

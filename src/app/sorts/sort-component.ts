@@ -49,10 +49,16 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.stateId = 0;
 
     const initData = {
-      data: this.input,
+      data: this.deepCopy([...this.input]),
       sorted: 0
     };
+
     this.history.set(0, this.deepCopy(initData));
+
+    const test = this.history.get(0);
+    for (let i = 0; i < initData.data.length; i++) {
+      console.log(`is same object? ${this.input[i] === test[i]}`);
+    }
     this.result$.next(this.history.get(0));
   }
 
