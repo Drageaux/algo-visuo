@@ -82,6 +82,7 @@ export class SortsComponent implements OnInit, OnDestroy {
   /*************************************************************************/
   onSortTypeChange($event: SortType) {
     this.currSortType = $event;
+    this.reset();
   }
 
   onChangeSampleSize() {
