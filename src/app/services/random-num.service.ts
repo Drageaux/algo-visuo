@@ -10,12 +10,14 @@ export class RandomNumService {
    * Generate an array of numbers, where the max value is also the sample size
    * @param size
    */
-  generate(size): number[] {
+  generate(size: number): number[] {
     // https://stackoverflow.com/a/43044960
-    return Array.from({ length: size }, () => this.getRndInteger(1, size));
+    return Array.from({ length: size }, () =>
+      this.getRndInteger(1, parseInt(size + '') + 1)
+    );
   }
 
-  getRndInteger(min, max) {
+  getRndInteger(min: number, max: number) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 }
