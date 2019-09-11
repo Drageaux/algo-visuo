@@ -27,6 +27,8 @@ export class BubbleComponent extends SortComponent {
     };
 
     // originally O(n^2) because looping n times per n elements
+    // ! has to highlight so many times;
+    // ! uncertainty of "sorted" status makes it so
     for (let j = 0; j < currentResult.data.length; j++) {
       let swapped = false;
       // why result.length - j - 1?

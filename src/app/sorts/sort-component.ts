@@ -87,6 +87,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
 
     // rerun sorting the model
     this.sort(this.input);
+    console.log(this.history.size);
 
     // TODO: start animation when done sorting
     let currState = 0;
