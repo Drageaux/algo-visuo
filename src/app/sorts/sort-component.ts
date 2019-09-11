@@ -1,3 +1,4 @@
+import { SortType } from './../classes/sort-type.enum';
 import { SortItem } from '../classes/sort-item';
 import { BehaviorSubject, interval, Subject } from 'rxjs';
 import { SortData } from '../classes/sort-data';
@@ -9,6 +10,10 @@ import { takeWhile, tap, map, switchMap } from 'rxjs/operators';
 
 export abstract class SortComponent implements OnInit, OnDestroy {
   title = '';
+  currSortType = SortType.SELECTION;
+  eSortType = SortType;
+
+  //
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;

@@ -1,6 +1,22 @@
 <div class="container">
   <h2 class="page-title">{{ title }}</h2>
 
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label
+      *ngFor="let sortType of eSortType | enumToArray"
+      class="btn btn-secondary active"
+    >
+      <input
+        type="radio"
+        name="options"
+        id="option1"
+        autocomplete="off"
+        checked
+      />
+      {{ sortType }}
+    </label>
+  </div>
+
   <app-controls
     [speed]="speed"
     (speedChangeEvent)="speed = $event; period$.next(speed)"
