@@ -1,14 +1,25 @@
+import { SortType } from '../classes/sort-type.enum';
 import { SortItem } from '../classes/sort-item';
-import { BehaviorSubject, interval, Subject } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { SortData } from '../classes/sort-data';
 import { SubSink } from 'subsink';
 import { RandomNumService } from '../services/random-num.service';
-import { OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { OnDestroy, OnInit, ChangeDetectorRef, Component } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
 import { takeWhile, tap, map, switchMap } from 'rxjs/operators';
+import { SortingService } from '../services/sorting.service';
 
-export abstract class SortComponent implements OnInit, OnDestroy {
+@Component({
+  selector: 'app-sorts',
+  templateUrl: './sorts.component.html',
+  styleUrls: ['./sorts.component.scss']
+})
+export class SortsComponent implements OnInit, OnDestroy {
   title = '';
+  eSortType = SortType;
+  currSortType: string = SortType.SELECTION;
+
+  //
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
@@ -23,6 +34,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
   subs = new SubSink();
 
   constructor(
+    private sortingService: SortingService,
     private randomNum: RandomNumService,
     private cd: ChangeDetectorRef
   ) {}
@@ -47,29 +59,21 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.stateId = 0;
 
     const initData = {
-      data: this.deepCopy(this.input),
+      data: this.sortingService.deepCopy(this.input),
       sorted: 0
     };
     this.history.set(0, initData);
     this.result$.next(this.history.get(0));
   }
 
-  deepCopy(srcObj) {
-    return JSON.parse(JSON.stringify(srcObj));
-  }
-
-  pushState(sData: SortData) {
-    this.stateId++;
-    this.history.set(this.stateId, this.deepCopy(sData));
-  }
-
-  printArray(arr: SortItem<number>[], wStatus = false) {
-    console.log(arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`));
-  }
-
   /*************************************************************************/
   /************************* INPUT CHANGE DETECTION ************************/
   /*************************************************************************/
+  onSortTypeChange($event: SortType) {
+    this.currSortType = $event;
+    this.reset();
+  }
+
   onChangeSampleSize() {
     // preserve this order
     this.input = this.randomNum.generate(this.sampleSize).map(x => ({
@@ -112,6 +116,19 @@ export abstract class SortComponent implements OnInit, OnDestroy {
   }
 
   protected sort(input: SortItem<number>[]) {
-    throw new Error('Should override sort method');
+    switch (this.currSortType) {
+      case SortType.SELECTION:
+        this.sortingService.selectionSort(input, this.history);
+        break;
+      case SortType.BUBBLE:
+        this.sortingService.bubbleSort(input, this.history);
+        break;
+      case SortType.INSERTION:
+        this.sortingService.insertionSort(input, this.history);
+        break;
+      default:
+        throw new Error('Sort type not implemented yet.');
+        break;
+    }
   }
 }
