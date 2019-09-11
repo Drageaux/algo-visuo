@@ -8,6 +8,7 @@ import { SortStatus } from '../classes/sort-status.enum';
 import { takeWhile, tap, map, switchMap } from 'rxjs/operators';
 
 export abstract class SortComponent implements OnInit, OnDestroy {
+  title = '';
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
@@ -86,6 +87,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
 
     // rerun sorting the model
     this.sort(this.input);
+    console.log(this.history.size);
 
     // TODO: start animation when done sorting
     let currState = 0;
@@ -109,7 +111,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
     this.interval = null;
   }
 
-  protected sort(input?: SortItem<number>[]) {
+  protected sort(input: SortItem<number>[]) {
     throw new Error('Should override sort method');
   }
 }

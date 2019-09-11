@@ -7,17 +7,18 @@ import { SortData } from 'src/app/classes/sort-data';
 
 @Component({
   selector: 'app-bubble',
-  templateUrl: './bubble.component.html',
-  styleUrls: ['./bubble.component.scss']
+  templateUrl: '../sort-component.html',
+  styleUrls: ['../sort-component.scss']
 })
-export class BubbleComponent extends SortComponent
-  implements OnInit, OnDestroy {
+export class BubbleComponent extends SortComponent {
+  title = 'Bubble Sort';
+
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
     super(randomNumService, cd);
   }
 
   /*************************************************************************/
-  /**************************** BUBBLE SORT ONLY ***************************/
+  /****************************** BUBBLE SORT ******************************/
   /*************************************************************************/
   sort(input: SortItem<number>[]) {
     const currentResult: SortData = {
@@ -26,6 +27,8 @@ export class BubbleComponent extends SortComponent
     };
 
     // originally O(n^2) because looping n times per n elements
+    // ! has to highlight so many times;
+    // ! uncertainty of "sorted" status makes it so
     for (let j = 0; j < currentResult.data.length; j++) {
       let swapped = false;
       // why result.length - j - 1?

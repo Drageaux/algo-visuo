@@ -13,17 +13,18 @@ import { SortComponent } from '../sort-component';
  */
 @Component({
   selector: 'app-selection',
-  templateUrl: './selection.component.html',
-  styleUrls: ['./selection.component.scss']
+  templateUrl: '../sort-component.html',
+  styleUrls: ['../sort-component.scss']
 })
-export class SelectionComponent extends SortComponent
-  implements OnInit, OnDestroy {
+export class SelectionComponent extends SortComponent {
+  title = 'Selection Sort';
+
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
     super(randomNumService, cd);
   }
 
   /*************************************************************************/
-  /************************** SELECTION SORT ONLY **************************/
+  /***************************** SELECTION SORT ****************************/
   /*************************************************************************/
   sort(input: SortItem<number>[]) {
     // ! input has nested objects, so changing that object even via

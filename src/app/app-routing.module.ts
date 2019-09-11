@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SelectionComponent } from './sorts/selection/selection.component';
 import { BubbleComponent } from './sorts/bubble/bubble.component';
+import { InsertionComponent } from './sorts/insertion/insertion.component';
 
 const routes: Routes = [
   {
@@ -11,6 +12,10 @@ const routes: Routes = [
   {
     path: 'sorts/bubble',
     component: BubbleComponent
+  },
+  {
+    path: 'sorts/insertion',
+    component: InsertionComponent
   },
   {
     path: '**',
