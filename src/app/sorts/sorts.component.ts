@@ -15,8 +15,8 @@ import { takeWhile, tap, map, switchMap } from 'rxjs/operators';
 })
 export class SortsComponent implements OnInit, OnDestroy {
   title = '';
-  currSortType = SortType.SELECTION;
   eSortType = SortType;
+  currSortType: string = SortType.SELECTION;
 
   //
   input: SortItem<number>[] = [];
@@ -80,6 +80,10 @@ export class SortsComponent implements OnInit, OnDestroy {
   /*************************************************************************/
   /************************* INPUT CHANGE DETECTION ************************/
   /*************************************************************************/
+  onSortTypeChange($event: SortType) {
+    this.currSortType = $event;
+  }
+
   onChangeSampleSize() {
     // preserve this order
     this.input = this.randomNum.generate(this.sampleSize).map(x => ({

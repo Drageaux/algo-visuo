@@ -10,7 +10,7 @@ import { EnumToArrayPipe } from './pipes/enum-to-array.pipe';
 import { SortsModule } from './sorts/sorts.module';
 
 @NgModule({
-  declarations: [AppComponent, EnumToArrayPipe],
+  declarations: [AppComponent],
   imports: [BrowserModule, AppRoutingModule, SortsModule],
   providers: [RandomNumService],
   bootstrap: [AppComponent]
