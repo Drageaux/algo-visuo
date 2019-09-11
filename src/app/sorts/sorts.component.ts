@@ -7,6 +7,7 @@ import { RandomNumService } from '../services/random-num.service';
 import { OnDestroy, OnInit, ChangeDetectorRef, Component } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
 import { takeWhile, tap, map, switchMap } from 'rxjs/operators';
+import { SortingService } from '../services/sorting.service';
 
 @Component({
   selector: 'app-sorts',
@@ -33,6 +34,7 @@ export class SortsComponent implements OnInit, OnDestroy {
   subs = new SubSink();
 
   constructor(
+    private sortingService: SortingService,
     private randomNum: RandomNumService,
     private cd: ChangeDetectorRef
   ) {}
@@ -57,24 +59,11 @@ export class SortsComponent implements OnInit, OnDestroy {
     this.stateId = 0;
 
     const initData = {
-      data: this.deepCopy(this.input),
+      data: this.sortingService.deepCopy(this.input),
       sorted: 0
     };
     this.history.set(0, initData);
     this.result$.next(this.history.get(0));
-  }
-
-  deepCopy(srcObj) {
-    return JSON.parse(JSON.stringify(srcObj));
-  }
-
-  pushState(sData: SortData) {
-    this.stateId++;
-    this.history.set(this.stateId, this.deepCopy(sData));
-  }
-
-  printArray(arr: SortItem<number>[], wStatus = false) {
-    console.log(arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`));
   }
 
   /*************************************************************************/
@@ -127,6 +116,19 @@ export class SortsComponent implements OnInit, OnDestroy {
   }
 
   protected sort(input: SortItem<number>[]) {
-    throw new Error('Should override sort method');
+    switch (this.currSortType) {
+      case SortType.SELECTION:
+        this.sortingService.selectionSort(input, this.history);
+        break;
+      case SortType.BUBBLE:
+        this.sortingService.bubbleSort(input, this.history);
+        break;
+      case SortType.INSERTION:
+        this.sortingService.insertionSort(input, this.history);
+        break;
+      default:
+        throw new Error('Sort type not implemented yet.');
+        break;
+    }
   }
 }
