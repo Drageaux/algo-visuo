@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortItem } from 'src/app/classes/sort-item';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
-import { SortComponent } from '../sort-component';
+import { SortsComponent } from '../sorts.component';
 
 /**
  * The selection sort algorithm sorts an array by repeatedly finding the minimum element
@@ -16,7 +16,7 @@ import { SortComponent } from '../sort-component';
   templateUrl: '../sort-component.html',
   styleUrls: ['../sort-component.scss']
 })
-export class SelectionComponent extends SortComponent {
+export class SelectionComponent extends SortsComponent {
   title = 'Selection Sort';
 
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {

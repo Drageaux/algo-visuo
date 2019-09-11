@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { SortComponent } from '../sort-component';
+import { SortsComponent } from '../sorts.component';
 import { SortItem } from 'src/app/classes/sort-item';
 import { RandomNumService } from 'src/app/services/random-num.service';
 import { SortStatus } from 'src/app/classes/sort-status.enum';
@@ -10,7 +10,7 @@ import { SortData } from 'src/app/classes/sort-data';
   templateUrl: '../sort-component.html',
   styleUrls: ['../sort-component.scss']
 })
-export class BubbleComponent extends SortComponent {
+export class BubbleComponent extends SortsComponent {
   title = 'Bubble Sort';
 
   constructor(randomNumService: RandomNumService, cd: ChangeDetectorRef) {
