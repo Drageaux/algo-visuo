@@ -95,6 +95,7 @@ export abstract class SortComponent implements OnInit, OnDestroy {
         map(() => this.history.get(currState)),
         takeWhile(x => x != null),
         tap(x => {
+          this.history.delete(currState);
           this.result$.next(x);
           currState++;
         })
