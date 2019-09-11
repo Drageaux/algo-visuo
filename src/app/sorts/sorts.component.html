@@ -1,24 +1,23 @@
 <div class="container">
   <h2 class="page-title">{{ title }}</h2>
 
-  <form>
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-      <div
-        *ngFor="let sortType of eSortType | enumToArray; let i = index"
-        class="btn btn-secondary"
-        (click)="onSortTypeChange(sortType)"
-      >
-        <input
-          type="radio"
-          name="sort-types"
-          id="sort-type-{{ i }}"
-          autocomplete="off"
-        />
-        {{ sortType }}
-      </div>
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <div
+      *ngFor="let sortType of eSortType | enumToArray; let i = index"
+      class="btn btn-secondary"
+      (click)="onSortTypeChange(sortType)"
+      [class.active]="sortType === currSortType"
+    >
+      <input
+        type="radio"
+        name="sort-types"
+        id="sort-type-{{ i }}"
+        autocomplete="off"
+      />
+      {{ sortType | titlecase }}
     </div>
-    {{ currSortType | json }}
-  </form>
+  </div>
+  <hr />
 
   <app-controls
     [speed]="speed"
