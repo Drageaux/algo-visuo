@@ -143,13 +143,12 @@ export class SortingService {
       this.pushState(currentResult, history);
       let b = a - 1;
 
-      console.log('a', currentResult.data[a], 'b', currentResult.data[b]);
       while (b >= 0 && currentResult.data[b].value > temp.value) {
         currentResult.data[b + 1] = currentResult.data[b];
         b--;
       }
 
-      // by this time, if b is decremented all the way to -1
+      // at this point, if b is decremented all the way to -1
       // temp is inserted at the beginning
       currentResult.data[b + 1] = temp;
 
