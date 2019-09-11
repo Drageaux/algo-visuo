@@ -19,6 +19,7 @@
   </div>
   <hr />
 
+  <h3>{{ currSortType | titlecase }} Sort</h3>
   <app-controls
     [speed]="speed"
     (speedChangeEvent)="speed = $event; period$.next(speed)"
