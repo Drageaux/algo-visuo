@@ -26,6 +26,7 @@ export class InsertionComponent extends SortComponent {
       sorted: 0
     };
 
+    currentResult.data[0].status = SortStatus.SORTED;
     for (let a = 1; a < currentResult.data.length; a++) {
       let temp = currentResult.data[a];
       temp.status = SortStatus.SORTING;
@@ -37,9 +38,16 @@ export class InsertionComponent extends SortComponent {
         currentResult.data[b + 1] = currentResult.data[b];
         b--;
       }
+
       // by this time, if b is decremented all the way to -1
       // temp is inserted at the beginning
       currentResult.data[b + 1] = temp;
+
+      // highlighting twice for visibility
+      temp.status = SortStatus.SORTING;
+      this.pushState(currentResult);
+      temp.status = SortStatus.SORTED;
+      this.pushState(currentResult);
       this.printArray(currentResult.data);
     }
   }
