@@ -6,18 +6,12 @@ import { AppComponent } from './app.component';
 import { SelectionModule } from './sorts/selection/selection.module';
 import { RandomNumService } from './services/random-num.service';
 import { BubbleModule } from './sorts/bubble/bubble.module';
-import { InsertionModule } from './sorts/insertion/insertion.module';
 import { EnumToArrayPipe } from './pipes/enum-to-array.pipe';
+import { SortsModule } from './sorts/sorts.module';
 
 @NgModule({
   declarations: [AppComponent, EnumToArrayPipe],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    SelectionModule,
-    BubbleModule,
-    InsertionModule
-  ],
+  imports: [BrowserModule, AppRoutingModule, SortsModule],
   providers: [RandomNumService],
   bootstrap: [AppComponent]
 })

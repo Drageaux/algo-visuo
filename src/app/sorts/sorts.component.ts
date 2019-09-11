@@ -1,14 +1,19 @@
-import { SortType } from './../classes/sort-type.enum';
+import { SortType } from '../classes/sort-type.enum';
 import { SortItem } from '../classes/sort-item';
-import { BehaviorSubject, interval, Subject } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { SortData } from '../classes/sort-data';
 import { SubSink } from 'subsink';
 import { RandomNumService } from '../services/random-num.service';
-import { OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { OnDestroy, OnInit, ChangeDetectorRef, Component } from '@angular/core';
 import { SortStatus } from '../classes/sort-status.enum';
 import { takeWhile, tap, map, switchMap } from 'rxjs/operators';
 
-export abstract class SortComponent implements OnInit, OnDestroy {
+@Component({
+  selector: 'app-sorts',
+  templateUrl: './sorts.component.html',
+  styleUrls: ['./sorts.component.scss']
+})
+export class SortsComponent implements OnInit, OnDestroy {
   title = '';
   currSortType = SortType.SELECTION;
   eSortType = SortType;
