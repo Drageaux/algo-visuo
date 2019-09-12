@@ -20,6 +20,11 @@
   <hr />
 
   <h3>{{ currSortType | titlecase }} Sort</h3>
+
+  <h2>
+    <pre>{{ sortingService.returnSortItemArray(input) }}</pre>
+  </h2>
+
   <app-controls
     [speed]="speed"
     (speedChangeEvent)="speed = $event; period$.next(speed)"

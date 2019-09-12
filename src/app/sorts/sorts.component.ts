@@ -16,10 +16,11 @@ import { SortingService } from '../services/sorting.service';
 })
 export class SortsComponent implements OnInit, OnDestroy {
   title = '';
+
+  // select sort type
   eSortType = SortType;
   currSortType: string = SortType.SELECTION;
-
-  //
+  // shared resources among sorts
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 200;
@@ -34,13 +35,14 @@ export class SortsComponent implements OnInit, OnDestroy {
   subs = new SubSink();
 
   constructor(
-    private sortingService: SortingService,
+    public sortingService: SortingService,
     private randomNum: RandomNumService,
     private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    this.sampleSize = 50;
+    this.sampleSize = 10;
+    this.currSortType = SortType.MERGE;
     this.onChangeSampleSize();
   }
 
@@ -125,6 +127,9 @@ export class SortsComponent implements OnInit, OnDestroy {
         break;
       case SortType.INSERTION:
         this.sortingService.insertionSort(input, this.history);
+        break;
+      case SortType.MERGE:
+        this.sortingService.mergeSort(input, this.history);
         break;
       default:
         throw new Error('Sort type not implemented yet.');

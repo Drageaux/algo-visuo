@@ -137,6 +137,7 @@ export class SortingService {
     };
 
     currentResult.data[0].status = SortStatus.SORTED;
+    currentResult.sorted++;
     for (let a = 1; a < currentResult.data.length; a++) {
       let temp = currentResult.data[a];
       temp.status = SortStatus.SORTING;
@@ -157,10 +158,55 @@ export class SortingService {
       this.pushState(currentResult, history);
 
       temp.status = SortStatus.SORTED;
+      currentResult.sorted++;
       this.pushState(currentResult, history);
       this.printArray(currentResult.data);
     }
   }
+
+  /*************************************************************************/
+  /******************************* MERGE SORT ******************************/
+  /*************************************************************************/
+  testMerge = [];
+  step = 0;
+  mergeSort(input: SortItem<number>[], history: Map<number, SortData>) {
+    const currRes: SortData = {
+      data: this.deepCopy(input),
+      sorted: 0
+    };
+
+    this.printArray(currRes.data);
+    this.recurSortForMergeSort(currRes.data, 0, currRes.data.length - 1);
+    console.log(this.testMerge);
+  }
+
+  private recurSortForMergeSort(arr: SortItem<number>[], left, right) {
+    if (left < right) {
+      const mid: number = Math.floor((left + right) / 2);
+      console.log('mid:', mid);
+
+      this.step++;
+      console.log(
+        this.step,
+        `from left ${left} to mid ${mid}`,
+        this.returnSortItemArray(arr.slice(left, mid + 1))
+      );
+      this.recurSortForMergeSort(arr, left, mid);
+
+      this.step++;
+      console.log(
+        this.step,
+        `from mid + 1 ${mid + 1} to right ${right}`,
+        this.returnSortItemArray(arr.slice(mid + 1, right + 1))
+      );
+      this.recurSortForMergeSort(arr, mid + 1, right);
+
+      console.log('MERGE');
+      this.mergeForMergeSort(arr, left, mid, right);
+    }
+  }
+
+  private mergeForMergeSort(arr: SortItem<number>[], left, mid, right) {}
 
   /*************************************************************************/
   /**************************** HELPER FUNCTIONS ***************************/
@@ -174,6 +220,10 @@ export class SortingService {
   }
 
   printArray(arr: SortItem<number>[], wStatus = false) {
-    console.log(arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`));
+    console.log(this.returnSortItemArray(arr, wStatus));
+  }
+
+  returnSortItemArray(arr: SortItem<number>[], wStatus = false) {
+    return arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`);
   }
 }
