@@ -177,36 +177,84 @@ export class SortingService {
 
     this.printArray(currRes.data);
     this.recurSortForMergeSort(currRes.data, 0, currRes.data.length - 1);
+    this.printArray(currRes.data, true);
     console.log(this.testMerge);
   }
 
   private recurSortForMergeSort(arr: SortItem<number>[], left, right) {
     if (left < right) {
       const mid: number = Math.floor((left + right) / 2);
-      console.log('mid:', mid);
 
       this.step++;
       console.log(
         this.step,
         `from left ${left} to mid ${mid}`,
-        this.returnSortItemArray(arr.slice(left, mid + 1))
+        this.returnSortItemArray(arr.slice(left, mid + 1), true)
       );
       this.recurSortForMergeSort(arr, left, mid);
 
       this.step++;
       console.log(
         this.step,
-        `from mid + 1 ${mid + 1} to right ${right}`,
-        this.returnSortItemArray(arr.slice(mid + 1, right + 1))
+        `from mid ${mid + 1} to right ${right}`,
+        this.returnSortItemArray(arr.slice(mid + 1, right + 1), true)
       );
       this.recurSortForMergeSort(arr, mid + 1, right);
 
-      console.log('MERGE');
       this.mergeForMergeSort(arr, left, mid, right);
     }
   }
 
-  private mergeForMergeSort(arr: SortItem<number>[], left, mid, right) {}
+  private mergeForMergeSort(arr: SortItem<number>[], left, mid, right) {
+    console.log('merging', left, mid, right);
+
+    // find size of 2 sub arrs to be merged
+    const leftArrN = mid - left + 1;
+    const rightArrN = right - mid;
+
+    const leftSubArr: SortItem<number>[] = [];
+    const rightSubArr: SortItem<number>[] = [];
+    for (let i = 0; i < leftArrN; i++) {
+      leftSubArr[i] = arr[left + i];
+    }
+
+    for (let i = 0; i < rightArrN; i++) {
+      rightSubArr[i] = arr[mid + i + 1];
+    }
+
+    // curr ind of sub arrs
+    let l = 0,
+      r = 0;
+    // curr ind of merged sub arr, starting from left
+    let mergedInd = left;
+    // making sure to move smallest values from each sub arr forward
+    // stop if finished with 1 sub arr
+    while (l < leftArrN && r < rightArrN) {
+      if (leftSubArr[l].value <= rightSubArr[r].value) {
+        arr[mergedInd] = leftSubArr[l];
+        l++;
+      } else {
+        arr[mergedInd] = rightSubArr[r];
+        r++;
+      }
+      mergedInd++;
+    }
+
+    // because the above loop checks ind of sub arrs simultaneously
+    // and interrupts when only 1 completes
+    // this piece of code will finish overwriting unsorted items
+    while (l < leftArrN) {
+      arr[mergedInd] = leftSubArr[l];
+      l++;
+      mergedInd++;
+    }
+    while (r < rightArrN) {
+      arr[mergedInd] = rightSubArr[r];
+      r++;
+      mergedInd++;
+    }
+    console.log(this.returnSortItemArray(arr));
+  }
 
   /*************************************************************************/
   /**************************** HELPER FUNCTIONS ***************************/
@@ -219,11 +267,11 @@ export class SortingService {
     history.set(history.size, this.deepCopy(sData));
   }
 
-  printArray(arr: SortItem<number>[], wStatus = false) {
+  printArray(arr: SortItem<number>[], wStatus = false): void {
     console.log(this.returnSortItemArray(arr, wStatus));
   }
 
-  returnSortItemArray(arr: SortItem<number>[], wStatus = false) {
+  returnSortItemArray(arr: SortItem<number>[], wStatus = false): string[] {
     return arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`);
   }
 }
