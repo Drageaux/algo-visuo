@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SortItem } from '../classes/sort-item';
 import { SortData } from '../classes/sort-data';
 import { SortStatus } from '../classes/sort-status.enum';
+import { HistoryMap } from '../classes/history-map';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class SortingService {
   /*************************************************************************/
   /***************************** SELECTION SORT ****************************/
   /*************************************************************************/
-  selectionSort(input: SortItem<number>[], history: Map<number, SortData>) {
+  selectionSort(input: SortItem<number>[], history: HistoryMap) {
     // ! input has nested objects, so changing that object even via
     // ! Object.assign would also cause side effects
     const currentResult = {
@@ -62,7 +63,7 @@ export class SortingService {
   /*************************************************************************/
   /****************************** BUBBLE SORT ******************************/
   /*************************************************************************/
-  bubbleSort(input: SortItem<number>[], history: Map<number, SortData>) {
+  bubbleSort(input: SortItem<number>[], history: HistoryMap) {
     const currentResult: SortData = {
       data: this.deepCopy(input),
       sorted: 0
@@ -130,7 +131,7 @@ export class SortingService {
   /*************************************************************************/
   /***************************** INSERTION SORT ****************************/
   /*************************************************************************/
-  insertionSort(input: SortItem<number>[], history: Map<number, SortData>) {
+  insertionSort(input: SortItem<number>[], history: HistoryMap) {
     const currentResult: SortData = {
       data: this.deepCopy(input),
       sorted: 0
@@ -169,19 +170,29 @@ export class SortingService {
   /*************************************************************************/
   testMerge = [];
   step = 0;
-  mergeSort(input: SortItem<number>[], history: Map<number, SortData>) {
+  mergeSort(input: SortItem<number>[], history: HistoryMap) {
     const currRes: SortData = {
       data: this.deepCopy(input),
       sorted: 0
     };
 
     this.printArray(currRes.data);
-    this.recurSortForMergeSort(currRes.data, 0, currRes.data.length - 1);
+    this.recurSortForMergeSort(
+      currRes.data,
+      0,
+      currRes.data.length - 1,
+      history
+    );
     this.printArray(currRes.data, true);
     console.log(this.testMerge);
   }
 
-  private recurSortForMergeSort(arr: SortItem<number>[], left, right) {
+  private recurSortForMergeSort(
+    arr: SortItem<number>[],
+    left: number,
+    right: number,
+    history: Map<number, SortData>
+  ) {
     if (left < right) {
       const mid: number = Math.floor((left + right) / 2);
 
@@ -191,7 +202,7 @@ export class SortingService {
         `from left ${left} to mid ${mid}`,
         this.returnSortItemArray(arr.slice(left, mid + 1), true)
       );
-      this.recurSortForMergeSort(arr, left, mid);
+      this.recurSortForMergeSort(arr, left, mid, history);
 
       this.step++;
       console.log(
@@ -199,13 +210,19 @@ export class SortingService {
         `from mid ${mid + 1} to right ${right}`,
         this.returnSortItemArray(arr.slice(mid + 1, right + 1), true)
       );
-      this.recurSortForMergeSort(arr, mid + 1, right);
+      this.recurSortForMergeSort(arr, mid + 1, right, history);
 
-      this.mergeForMergeSort(arr, left, mid, right);
+      this.mergeForMergeSort(arr, left, mid, right, history);
     }
   }
 
-  private mergeForMergeSort(arr: SortItem<number>[], left, mid, right) {
+  private mergeForMergeSort(
+    arr: SortItem<number>[],
+    left: number,
+    mid: number,
+    right: number,
+    history: HistoryMap
+  ) {
     console.log('merging', left, mid, right);
 
     // find size of 2 sub arrs to be merged
@@ -216,11 +233,14 @@ export class SortingService {
     const rightSubArr: SortItem<number>[] = [];
     for (let i = 0; i < leftArrN; i++) {
       leftSubArr[i] = arr[left + i];
+      leftSubArr[i].status = SortStatus.SORTING;
     }
 
     for (let i = 0; i < rightArrN; i++) {
       rightSubArr[i] = arr[mid + i + 1];
+      rightSubArr[i].status = SortStatus.SORTING;
     }
+    this.pushState({ data: arr, sorted: 0 }, history);
 
     // curr ind of sub arrs
     let l = 0,
@@ -232,9 +252,11 @@ export class SortingService {
     while (l < leftArrN && r < rightArrN) {
       if (leftSubArr[l].value <= rightSubArr[r].value) {
         arr[mergedInd] = leftSubArr[l];
+        arr[mergedInd].status = SortStatus.SORTED;
         l++;
       } else {
         arr[mergedInd] = rightSubArr[r];
+        arr[mergedInd].status = SortStatus.SORTED;
         r++;
       }
       mergedInd++;
@@ -245,15 +267,17 @@ export class SortingService {
     // this piece of code will finish overwriting unsorted items
     while (l < leftArrN) {
       arr[mergedInd] = leftSubArr[l];
+      arr[mergedInd].status = SortStatus.SORTED;
       l++;
       mergedInd++;
     }
     while (r < rightArrN) {
       arr[mergedInd] = rightSubArr[r];
+      arr[mergedInd].status = SortStatus.SORTED;
       r++;
       mergedInd++;
     }
-    console.log(this.returnSortItemArray(arr));
+    this.pushState({ data: arr, sorted: 0 }, history);
   }
 
   /*************************************************************************/
@@ -263,7 +287,7 @@ export class SortingService {
     return JSON.parse(JSON.stringify(srcObj));
   }
 
-  pushState(sData: SortData, history: Map<number, SortData>) {
+  pushState(sData: SortData, history: HistoryMap) {
     history.set(history.size, this.deepCopy(sData));
   }
 
