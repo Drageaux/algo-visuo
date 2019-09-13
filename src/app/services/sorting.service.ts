@@ -10,9 +10,11 @@ import { SortNumberArray } from '../classes/sort-number-array';
 })
 export class SortingService {
   constructor() {}
+
   /*************************************************************************/
   /***************************** SELECTION SORT ****************************/
   /*************************************************************************/
+
   selectionSort(input: SortNumberArray, history: HistoryMap) {
     const res = this.initResult(input);
 
@@ -211,7 +213,10 @@ export class SortingService {
       arrR[i] = arr[mid + i + 1];
       arrR[i].status = SortStatus.SORTING;
     }
-    this.pushState({ data: arr, sorted: 0 }, history);
+    this.pushState(
+      { data: arr, sorted: history.get(history.size - 1).sorted },
+      history
+    );
 
     // curr ind of sub arrs
     let l = 0,
@@ -248,7 +253,7 @@ export class SortingService {
       r++;
       m++;
     }
-    this.pushState({ data: arr, sorted: 0 }, history);
+    this.pushState({ data: arr, sorted: right + 1 }, history);
   }
 
   /*************************************************************************/
