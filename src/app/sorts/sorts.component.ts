@@ -15,8 +15,6 @@ import { SortingService } from '../services/sorting.service';
   styleUrls: ['./sorts.component.scss']
 })
 export class SortsComponent implements OnInit, OnDestroy {
-  title = '';
-
   // select sort type
   eSortType = SortType;
   currSortType: string = SortType.SELECTION;
@@ -30,7 +28,6 @@ export class SortsComponent implements OnInit, OnDestroy {
   stateId = 0;
   // protected model
   result$ = new BehaviorSubject<SortData>(null);
-  interval;
   // subscription cleaner
   subs = new SubSink();
 
@@ -54,8 +51,6 @@ export class SortsComponent implements OnInit, OnDestroy {
   /************************** HELPER/CLEANUP CREW **************************/
   /*************************************************************************/
   reset() {
-    clearInterval(this.interval);
-    this.interval = null;
     this.subs.unsubscribe();
     this.history = new Map();
     this.stateId = 0;
@@ -112,9 +107,11 @@ export class SortsComponent implements OnInit, OnDestroy {
     this.period$.next(this.speed);
   }
 
+  /**
+   * Stop animations and background processes
+   */
   stop() {
-    clearInterval(this.interval);
-    this.interval = null;
+    this.subs.unsubscribe();
   }
 
   protected sort(input: SortItem<number>[]) {
