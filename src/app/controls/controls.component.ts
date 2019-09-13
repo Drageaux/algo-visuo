@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
@@ -10,6 +11,7 @@ export class ControlsComponent implements OnInit {
   @Output() speedChangeEvent = new EventEmitter<number>();
   @Input() sampleSize = 100;
   @Output() sampleSizeChangeEvent = new EventEmitter<number>();
+  env = environment;
 
   constructor() {}
 
