@@ -1,6 +1,7 @@
 import { SortItem } from './sort-item';
+import { SortNumberArray } from './sort-number-array';
 
 export interface SortData {
-  data: SortItem<number>[];
+  data: SortNumberArray;
   sorted: number;
 }

@@ -19,9 +19,9 @@
 
   <h3>{{ currSortType | titlecase }} Sort</h3>
 
-  <h2>
+  <h4 *ngIf="!env.production">
     <pre>{{ sortingService.returnSortItemArray(input) }}</pre>
-  </h2>
+  </h4>
 
   <app-controls
     [speed]="speed"

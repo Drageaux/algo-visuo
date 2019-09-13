@@ -15,32 +15,10 @@
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
-        <a
-          id="sorts-dropdown"
-          class="nav-link dropdown-toggle"
-          data-toggle="dropdown"
-          href="#"
-          role="button"
-          aria-haspopup="true"
-          aria-expanded="false"
-          >Sorts</a
-        >
-        <div
-          class="dropdown-menu text-left dropdown-menu-right"
-          aria-labelledby="sorts-dropdown"
-        >
-          <a class="dropdown-item" [routerLink]="['sorts/selection']"
-            >Selection Sort</a
-          >
-          <a class="dropdown-item" [routerLink]="['sorts/bubble']"
-            >Bubble Sort</a
-          ><a class="dropdown-item" [routerLink]="['sorts/insertion']"
-            >Insertion Sort</a
-          >
-        </div>
+        <a class="nav-link" [routerLink]="['/sorts']">Sorts</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
+        <a class="nav-link disabled" href="#">Searches</a>
       </li>
     </ul>
   </div>

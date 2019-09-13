@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { SortType } from '../classes/sort-type.enum';
 import { SortItem } from '../classes/sort-item';
 import { BehaviorSubject, interval } from 'rxjs';
@@ -15,8 +16,10 @@ import { SortingService } from '../services/sorting.service';
   styleUrls: ['./sorts.component.scss']
 })
 export class SortsComponent implements OnInit, OnDestroy {
-  // select sort type
+  // need to declare
+  env = environment;
   eSortType = SortType;
+  // select sort type
   currSortType: string = SortType.SELECTION;
   // shared resources among sorts
   input: SortItem<number>[] = [];
@@ -38,8 +41,11 @@ export class SortsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.sampleSize = 10;
-    this.currSortType = SortType.MERGE;
+    if (!this.env.production) {
+      this.sampleSize = 10;
+      this.speed = 500;
+      this.currSortType = SortType.MERGE;
+    }
     this.onChangeSampleSize();
   }
 
