@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'sorts/selection'
+    redirectTo: 'sorts'
   }
 ];
 
