@@ -263,22 +263,27 @@ export class SortingService {
   quickSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
-    this.quickSortRecur(res.data, 0, res.data.length - 1);
+    this.quickSortRecur(res.data, 0, res.data.length - 1, history);
   }
 
-  quickSortRecur(arr: SortNumberArray, low, high) {
+  quickSortRecur(arr: SortNumberArray, low, high, history) {
     if (low < high) {
       /* pi is partitioning index, arr[pi] is
       now at right place */
       this.printArray(arr);
-      const partInd = this.partitionForQuickSort(arr, low, high);
+      arr[high].status = SortStatus.PIVOT;
+      this.pushState({ data: arr, sorted: 0 }, history);
 
-      this.quickSortRecur(arr, low, partInd - 1);
-      this.quickSortRecur(arr, partInd + 1, high);
+      const partInd = this.partitionForQuickSort(arr, low, high, history);
+      // arr[partInd].status = SortStatus.SORTED;
+      this.pushState({ data: arr, sorted: 0 }, history);
+
+      this.quickSortRecur(arr, low, partInd - 1, history);
+      this.quickSortRecur(arr, partInd + 1, high, history);
     }
   }
 
-  partitionForQuickSort(arr: SortNumberArray, low, high) {
+  partitionForQuickSort(arr: SortNumberArray, low, high, history) {
     const piv = arr[high];
 
     // index of the smaller element
@@ -288,19 +293,48 @@ export class SortingService {
     // inside the boundaries, sort the ones
     for (let j = low; j < high; j++) {
       console.log('i:', i, 'j:', j);
+
+      // arr[j].status = SortStatus.SORTING;
+      // this.pushState({ data: arr, sorted: 0 }, history);
       if (arr[j].value < piv.value) {
         console.log(`j ${arr[j].value} less than pivot`);
         i++;
+
+        arr[j].status = SortStatus.SORTING;
+        this.pushState({ data: arr, sorted: 0 }, history);
         const temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
+
+        // arr[i].status = SortStatus.SORTED;
+        // arr[j].status = SortStatus.SORTING;
+        this.pushState({ data: arr, sorted: 0 }, history);
+
         this.printArray(arr);
+      } else {
+        arr[j].status = SortStatus.UNSORTED;
+        // this.pushState({ data: arr, sorted: 0 }, history);
       }
     }
+
+    // arr[i + 1].status = SortStatus.SORTING;
+    // arr[high].status = SortStatus.SORTING;
+    // this.pushState({ data: arr, sorted: 0 }, history);
+
+    // at this point, we've found the correct position for the pivot
+    arr[i + 1].status = SortStatus.SORTED;
+    this.pushState({ data: arr, sorted: 0 }, history);    
 
     const temp = arr[i + 1];
     arr[i + 1] = arr[high];
     arr[high] = temp;
+    this.pushState({ data: arr, sorted: 0 }, history);    
+
+
+    // arr[i + 1].status = SortStatus.SORTED;
+    // arr[high].status = SortStatus.SORTED;
+    // this.pushState({ data: arr, sorted: 0 }, history);
+
     console.log('done partition', i + 1);
     return i + 1;
   }
