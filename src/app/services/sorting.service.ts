@@ -156,7 +156,7 @@ export class SortingService {
   mergeSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
-    this.recurSortForMergeSort(res.data, 0, res.data.length - 1, history);
+    this.mergeSortRecur(res.data, 0, res.data.length - 1, history);
   }
 
   /**
@@ -167,7 +167,7 @@ export class SortingService {
    * @param right
    * @param history - history map passed in to help track new states
    */
-  private recurSortForMergeSort(
+  private mergeSortRecur(
     arr: SortNumberArray,
     left: number,
     right: number,
@@ -176,8 +176,8 @@ export class SortingService {
     if (left < right) {
       const mid: number = Math.floor((left + right) / 2);
 
-      this.recurSortForMergeSort(arr, left, mid, history);
-      this.recurSortForMergeSort(arr, mid + 1, right, history);
+      this.mergeSortRecur(arr, left, mid, history);
+      this.mergeSortRecur(arr, mid + 1, right, history);
 
       this.mergeForMergeSort(arr, left, mid, right, history);
     }
@@ -254,6 +254,55 @@ export class SortingService {
       m++;
     }
     this.pushState({ data: arr, sorted: right + 1 }, history);
+  }
+
+  /*************************************************************************/
+  /******************************* MERGE SORT ******************************/
+  /*************************************************************************/
+
+  quickSort(input: SortNumberArray, history: HistoryMap) {
+    const res: SortData = this.initResult(input);
+
+    this.quickSortRecur(res.data, 0, res.data.length - 1);
+  }
+
+  quickSortRecur(arr: SortNumberArray, low, high) {
+    if (low < high) {
+      /* pi is partitioning index, arr[pi] is
+      now at right place */
+      this.printArray(arr);
+      const partInd = this.partitionForQuickSort(arr, low, high);
+
+      this.quickSortRecur(arr, low, partInd - 1);
+      this.quickSortRecur(arr, partInd + 1, high);
+    }
+  }
+
+  partitionForQuickSort(arr: SortNumberArray, low, high) {
+    const piv = arr[high];
+
+    // index of the smaller element
+    let i = low - 1;
+    console.log('low', low, 'high', high);
+
+    // inside the boundaries, sort the ones
+    for (let j = low; j < high; j++) {
+      console.log('i:', i, 'j:', j);
+      if (arr[j].value < piv.value) {
+        console.log(`j ${arr[j].value} less than pivot`);
+        i++;
+        const temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+        this.printArray(arr);
+      }
+    }
+
+    const temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    console.log('done partition', i + 1);
+    return i + 1;
   }
 
   /*************************************************************************/

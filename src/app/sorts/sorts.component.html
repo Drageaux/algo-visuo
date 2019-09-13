@@ -1,4 +1,6 @@
-<div class="container my-4">
+<div class="container">
+  <h2 class="page-title">{{ title }}</h2>
+
   <div class="btn-group btn-group-toggle" data-toggle="buttons">
     <div
       *ngFor="let sortType of eSortType | enumToArray; let i = index"
@@ -19,9 +21,9 @@
 
   <h3>{{ currSortType | titlecase }} Sort</h3>
 
-  <h4 *ngIf="!env.production">
+  <h2>
     <pre>{{ sortingService.returnSortItemArray(input) }}</pre>
-  </h4>
+  </h2>
 
   <app-controls
     [speed]="speed"
