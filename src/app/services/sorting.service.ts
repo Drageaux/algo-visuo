@@ -40,14 +40,14 @@ export class SortingService {
     }
   }
 
-  private selectMinInd(unsortedSubArr: SortNumberArray) {
+  /**
+   * Return the index of the smallest value item.
+   * @param arr
+   */
+  private selectMinInd(arr: SortNumberArray) {
     let minInd = 0;
-    for (
-      let unsortedInd = 0;
-      unsortedInd < unsortedSubArr.length;
-      unsortedInd++
-    ) {
-      if (unsortedSubArr[unsortedInd].value < unsortedSubArr[minInd].value) {
+    for (let unsortedInd = 0; unsortedInd < arr.length; unsortedInd++) {
+      if (arr[unsortedInd].value < arr[minInd].value) {
         minInd = unsortedInd;
       }
     }
@@ -116,6 +116,7 @@ export class SortingService {
   /*************************************************************************/
   /***************************** INSERTION SORT ****************************/
   /*************************************************************************/
+
   insertionSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
@@ -154,13 +155,11 @@ export class SortingService {
     const res: SortData = this.initResult(input);
 
     this.recurSortForMergeSort(res.data, 0, res.data.length - 1, history);
-    this.printArray(res.data, true);
   }
 
   /**
    * Recursively halves the array into 1-item arrays,
    * then sorts and merges those arrays into 1.
-   *
    * @param arr
    * @param left
    * @param right
@@ -183,7 +182,7 @@ export class SortingService {
   }
 
   /**
-   *
+   * Sort and merge sub arrays into 1 sorted array.
    * @param arr - original array reference
    * @param left - leftmost boundary
    * @param mid - middle boundary
@@ -197,19 +196,17 @@ export class SortingService {
     right: number,
     history: HistoryMap
   ) {
-    console.log('merging', left, mid, right);
-
     // find size of 2 sub arrs to be merged
     const nL = mid - left + 1;
     const nR = right - mid;
 
+    // shallow copying the left and right sub arrs
     const arrL: SortNumberArray = [];
     const arrR: SortNumberArray = [];
     for (let i = 0; i < nL; i++) {
       arrL[i] = arr[left + i];
       arrL[i].status = SortStatus.SORTING;
     }
-
     for (let i = 0; i < nR; i++) {
       arrR[i] = arr[mid + i + 1];
       arrR[i].status = SortStatus.SORTING;
@@ -237,8 +234,8 @@ export class SortingService {
     }
 
     // because the above loop checks ind of sub arrs simultaneously
-    // and interrupts when only 1 completes
-    // this piece of code will finish overwriting unsorted items
+    // and interrupts when only 1 completes,
+    // ! this piece of code will finish overwriting unsorted items
     while (l < nL) {
       arr[m] = arrL[l];
       arr[m].status = SortStatus.SORTED;
