@@ -39,6 +39,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "https://drageaux.github.io/algo-visuo/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
