@@ -8,7 +8,7 @@
       (change)="speedChangeEvent.emit($event.target.value)"
       type="range"
       min="20"
-      max="1000"
+      max="{{ env.production ? 1000 : 2000 }}"
     />
   </div>
   <div class="form-group col pl-4">

@@ -19,22 +19,22 @@ export class SortingService {
     const res = this.initResult(input);
 
     while (res.sorted < input.length) {
-      // 1. select swap target
+      // select swap target
       const minInd =
         res.sorted +
         this.selectMinInd(res.data.slice(res.sorted, input.length));
 
-      // 2. highlight preswap
+      // highlight preswap
       res.data[minInd].status = SortStatus.SORTING;
       res.data[res.sorted].status = SortStatus.SORTING;
       this.pushState(res, history);
 
-      // 3. swap
+      // swap
       const temp = res.data[minInd];
       res.data[minInd] = res.data[res.sorted];
       res.data[res.sorted] = temp;
 
-      // 4. finalize highlight postswap
+      // finalize highlight postswap
       res.data[minInd].status = SortStatus.UNSORTED;
       res.data[res.sorted].status = SortStatus.SORTED;
       res.sorted++;
@@ -70,14 +70,14 @@ export class SortingService {
       // why result.length - j - 1?
       // because the largest has already bubbled to the last place
       for (let k = 0; k < res.data.length - res.sorted - 1; k++) {
-        // 1. select swap target
+        // select swap target
         if (res.data[k].value > res.data[k + 1].value) {
-          // 2. highlight preswap
+          // highlight preswap
           res.data[k].status = SortStatus.SORTING;
           res.data[k + 1].status = SortStatus.SORTING;
           this.pushState(res, history);
 
-          // 3. swap
+          // swap
           const temp = res.data[k];
           res.data[k] = res.data[k + 1];
           res.data[k + 1] = temp;
@@ -86,7 +86,7 @@ export class SortingService {
           swapped = true;
         }
 
-        // 4. finalize highlight postswap
+        // finalize highlight postswap
         if (k + 1 === res.data.length - j - 1) {
           res.data[k + 1].status = SortStatus.SORTED;
           this.pushState(res, history);
@@ -156,7 +156,7 @@ export class SortingService {
   mergeSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
-    this.recurSortForMergeSort(res.data, 0, res.data.length - 1, history);
+    this.mergeSortRecur(res.data, 0, res.data.length - 1, history);
   }
 
   /**
@@ -167,7 +167,7 @@ export class SortingService {
    * @param right
    * @param history - history map passed in to help track new states
    */
-  private recurSortForMergeSort(
+  private mergeSortRecur(
     arr: SortNumberArray,
     left: number,
     right: number,
@@ -176,8 +176,8 @@ export class SortingService {
     if (left < right) {
       const mid: number = Math.floor((left + right) / 2);
 
-      this.recurSortForMergeSort(arr, left, mid, history);
-      this.recurSortForMergeSort(arr, mid + 1, right, history);
+      this.mergeSortRecur(arr, left, mid, history);
+      this.mergeSortRecur(arr, mid + 1, right, history);
 
       this.mergeForMergeSort(arr, left, mid, right, history);
     }
@@ -254,6 +254,108 @@ export class SortingService {
       m++;
     }
     this.pushState({ data: arr, sorted: right + 1 }, history);
+  }
+
+  /*************************************************************************/
+  /******************************* MERGE SORT ******************************/
+  /*************************************************************************/
+
+  quickSort(input: SortNumberArray, history: HistoryMap) {
+    const res: SortData = this.initResult(input);
+
+    this.quickSortRecur(res.data, 0, res.data.length - 1, history);
+  }
+
+  quickSortRecur(
+    arr: SortNumberArray,
+    low: number,
+    high: number,
+    history: HistoryMap
+  ) {
+    if (low < high) {
+      arr[high].status = SortStatus.PIVOT;
+      this.pushState(
+        { data: arr, sorted: history.get(history.size - 1).sorted },
+        history
+      );
+
+      // pi is partitioning index, arr[pi] is
+      // now at right place
+      const partInd = this.partitionForQuickSort(arr, low, high, history);
+
+      this.quickSortRecur(arr, low, partInd - 1, history);
+      this.quickSortRecur(arr, partInd + 1, high, history);
+    } else if (low === high) {
+      // if go down to 1-item range, it should be in the right place already
+      arr[low].status = SortStatus.SORTED;
+      this.pushState(
+        { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
+        history
+      );
+    }
+  }
+
+  partitionForQuickSort(
+    arr: SortNumberArray,
+    low: number,
+    high: number,
+    history: HistoryMap
+  ) {
+    // for sake of simplicity, pick last el as pivot
+    const piv = arr[high];
+
+    // index of the smaller element
+    let i = low - 1;
+
+    // inside the boundaries, iterate to find final position for pivot,
+    // and put smaller elements to the left of final position
+    for (let j = low; j < high; j++) {
+      if (arr[j].value < piv.value) {
+        // smaller number is found, push pivot final position to right
+        i++;
+
+        // sort and change status, but only animate if not comparing the same value
+        if (i !== j) {
+          // preswap highlighting
+          arr[j].status = SortStatus.SORTING;
+          arr[i].status = SortStatus.SORTING;
+          this.pushState(
+            { data: arr, sorted: history.get(history.size - 1).sorted },
+            history
+          );
+
+          const temp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = temp;
+
+          // postswap highlighting
+          arr[i].status = SortStatus.UNSORTED;
+          arr[j].status = SortStatus.UNSORTED;
+          this.pushState(
+            { data: arr, sorted: history.get(history.size - 1).sorted },
+            history
+          );
+        } else {
+          // no change as i and j are same
+          arr[j].status = SortStatus.UNSORTED;
+        }
+      } else {
+        arr[j].status = SortStatus.UNSORTED;
+      }
+    }
+
+    // at this point, we've found the NEW correct position for the pivot
+    // which is i + 1 (to the right of all smaller elements)
+    const temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+
+    arr[i + 1].status = SortStatus.SORTED;
+    this.pushState(
+      { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
+      history
+    );
+    return i + 1;
   }
 
   /*************************************************************************/

@@ -44,7 +44,7 @@ export class SortsComponent implements OnInit, OnDestroy {
     if (!this.env.production) {
       this.sampleSize = 10;
       this.speed = 500;
-      this.currSortType = SortType.MERGE;
+      this.currSortType = SortType.QUICK;
     }
     this.onChangeSampleSize();
   }
@@ -133,6 +133,9 @@ export class SortsComponent implements OnInit, OnDestroy {
         break;
       case SortType.MERGE:
         this.sortingService.mergeSort(input, this.history);
+        break;
+      case SortType.QUICK:
+        this.sortingService.quickSort(input, this.history);
         break;
       default:
         throw new Error('Sort type not implemented yet.');

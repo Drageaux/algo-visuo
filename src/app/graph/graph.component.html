@@ -9,7 +9,8 @@
       [ngClass]="{
         'bg-primary': num.status === eSortStatus.UNSORTED,
         'bg-warning': num.status === eSortStatus.SORTING,
-        'bg-success': num.status === eSortStatus.SORTED
+        'bg-success': num.status === eSortStatus.SORTED,
+        'bg-danger': num.status === eSortStatus.PIVOT
       }"
       [attr.data-value]="num"
     ></div>
