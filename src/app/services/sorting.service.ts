@@ -19,22 +19,22 @@ export class SortingService {
     const res = this.initResult(input);
 
     while (res.sorted < input.length) {
-      // 1. select swap target
+      // select swap target
       const minInd =
         res.sorted +
         this.selectMinInd(res.data.slice(res.sorted, input.length));
 
-      // 2. highlight preswap
+      // highlight preswap
       res.data[minInd].status = SortStatus.SORTING;
       res.data[res.sorted].status = SortStatus.SORTING;
       this.pushState(res, history);
 
-      // 3. swap
+      // swap
       const temp = res.data[minInd];
       res.data[minInd] = res.data[res.sorted];
       res.data[res.sorted] = temp;
 
-      // 4. finalize highlight postswap
+      // finalize highlight postswap
       res.data[minInd].status = SortStatus.UNSORTED;
       res.data[res.sorted].status = SortStatus.SORTED;
       res.sorted++;
@@ -70,14 +70,14 @@ export class SortingService {
       // why result.length - j - 1?
       // because the largest has already bubbled to the last place
       for (let k = 0; k < res.data.length - res.sorted - 1; k++) {
-        // 1. select swap target
+        // select swap target
         if (res.data[k].value > res.data[k + 1].value) {
-          // 2. highlight preswap
+          // highlight preswap
           res.data[k].status = SortStatus.SORTING;
           res.data[k + 1].status = SortStatus.SORTING;
           this.pushState(res, history);
 
-          // 3. swap
+          // swap
           const temp = res.data[k];
           res.data[k] = res.data[k + 1];
           res.data[k + 1] = temp;
@@ -86,7 +86,7 @@ export class SortingService {
           swapped = true;
         }
 
-        // 4. finalize highlight postswap
+        // finalize highlight postswap
         if (k + 1 === res.data.length - j - 1) {
           res.data[k + 1].status = SortStatus.SORTED;
           this.pushState(res, history);
@@ -311,23 +311,38 @@ export class SortingService {
     // inside the boundaries, iterate to find final position for pivot,
     // and put smaller elements to the left of final position
     for (let j = low; j < high; j++) {
-      arr[j].status = SortStatus.SORTING;
-      this.pushState(
-        { data: arr, sorted: history.get(history.size - 1).sorted },
-        history
-      );
       if (arr[j].value < piv.value) {
+        // smaller number is found, push pivot final position to right
         i++;
-        const temp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = temp;
-        this.pushState(
-          { data: arr, sorted: history.get(history.size - 1).sorted },
-          history
-        );
-        this.printArray(arr);
+
+        // sort and change status, but only animate if not comparing the same value
+        if (i !== j) {
+          // preswap highlighting
+          arr[j].status = SortStatus.SORTING;
+          arr[i].status = SortStatus.SORTING;
+          this.pushState(
+            { data: arr, sorted: history.get(history.size - 1).sorted },
+            history
+          );
+
+          const temp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = temp;
+
+          // postswap highlighting
+          arr[i].status = SortStatus.UNSORTED;
+          arr[j].status = SortStatus.UNSORTED;
+          this.pushState(
+            { data: arr, sorted: history.get(history.size - 1).sorted },
+            history
+          );
+        } else {
+          // no change as i and j are same
+          arr[j].status = SortStatus.UNSORTED;
+        }
+      } else {
+        arr[j].status = SortStatus.UNSORTED;
       }
-      arr[j].status = SortStatus.UNSORTED;
     }
 
     // at this point, we've found the NEW correct position for the pivot
@@ -341,7 +356,6 @@ export class SortingService {
       { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
       history
     );
-    console.log(history);
     return i + 1;
   }
 
