@@ -266,10 +266,13 @@ export class SortingService {
     this.quickSortRecur(res.data, 0, res.data.length - 1, history);
   }
 
-  quickSortRecur(arr: SortNumberArray, low, high, history) {
+  quickSortRecur(
+    arr: SortNumberArray,
+    low: number,
+    high: number,
+    history: HistoryMap
+  ) {
     if (low < high) {
-      /* pi is partitioning index, arr[pi] is
-      now at right place */
       this.printArray(arr);
       arr[high].status = SortStatus.PIVOT;
       this.pushState(
@@ -277,12 +280,15 @@ export class SortingService {
         history
       );
 
+      // pi is partitioning index, arr[pi] is
+      // now at right place
       const partInd = this.partitionForQuickSort(arr, low, high, history);
 
       this.quickSortRecur(arr, low, partInd - 1, history);
       this.quickSortRecur(arr, partInd + 1, high, history);
-
-      arr[high].status = SortStatus.SORTED;
+    } else if (low === high) {
+      // if go down to 1-item range, it should be in the right place already
+      arr[low].status = SortStatus.SORTED;
       this.pushState(
         { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
         history
@@ -290,40 +296,38 @@ export class SortingService {
     }
   }
 
-  partitionForQuickSort(arr: SortNumberArray, low, high, history) {
+  partitionForQuickSort(
+    arr: SortNumberArray,
+    low: number,
+    high: number,
+    history: HistoryMap
+  ) {
+    // for sake of simplicity, pick last el as pivot
     const piv = arr[high];
 
     // index of the smaller element
     let i = low - 1;
-    console.log('low', low, 'high', high);
 
     // inside the boundaries, iterate to find final position for pivot,
     // and put smaller elements to the left of final position
     for (let j = low; j < high; j++) {
-      console.log('i:', i, 'j:', j);
-
+      arr[j].status = SortStatus.SORTING;
+      this.pushState(
+        { data: arr, sorted: history.get(history.size - 1).sorted },
+        history
+      );
       if (arr[j].value < piv.value) {
-        console.log(`j ${arr[j].value} less than pivot`);
-
         i++;
-
-        arr[j].status = SortStatus.SORTING;
-        this.pushState(
-          { data: arr, sorted: history.get(history.size - 1).sorted },
-          history
-        );
         const temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
-
-        arr[i].status = SortStatus.SORTED;
         this.pushState(
           { data: arr, sorted: history.get(history.size - 1).sorted },
           history
         );
-
         this.printArray(arr);
       }
+      arr[j].status = SortStatus.UNSORTED;
     }
 
     // at this point, we've found the NEW correct position for the pivot
@@ -331,20 +335,13 @@ export class SortingService {
     const temp = arr[i + 1];
     arr[i + 1] = arr[high];
     arr[high] = temp;
-    arr[i + 1].status = SortStatus.SORTED;
-
-    this.pushState(
-      { data: arr, sorted: history.get(history.size - 1).sorted },
-      history
-    );
 
     arr[i + 1].status = SortStatus.SORTED;
     this.pushState(
-      { data: arr, sorted: history.get(history.size - 1).sorted + 2 },
+      { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
       history
     );
-
-    console.log('done partition', i + 1);
+    console.log(history);
     return i + 1;
   }
 
