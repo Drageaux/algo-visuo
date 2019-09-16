@@ -273,7 +273,6 @@ export class SortingService {
     history: HistoryMap
   ) {
     if (low < high) {
-      this.printArray(arr);
       arr[high].status = SortStatus.PIVOT;
       this.pushState(
         { data: arr, sorted: history.get(history.size - 1).sorted },
