@@ -1,9 +1,9 @@
-export class Node {
-  key: number;
-  left: Node;
-  right: Node;
+export class Node<T> {
+  key: T;
+  left: Node<T>;
+  right: Node<T>;
 
-  public Node(item: number) {
+  constructor(item: T) {
     this.key = item;
     this.left = null;
     this.right = null;

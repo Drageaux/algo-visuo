@@ -1,12 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-
+import { TreesComponent } from './trees.component';
 
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule
-  ]
+  declarations: [TreesComponent],
+  imports: [CommonModule]
 })
-export class TreesModule { }
+export class TreesModule {}
