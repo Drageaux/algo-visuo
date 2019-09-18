@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SortsComponent } from './sorts/sorts.component';
+import { TreesComponent } from './trees/trees.component';
 
 const routes: Routes = [
   {
@@ -8,8 +9,12 @@ const routes: Routes = [
     component: SortsComponent
   },
   {
+    path: 'trees',
+    component: TreesComponent
+  },
+  {
     path: '**',
-    redirectTo: 'sorts'
+    redirectTo: 'trees'
   }
 ];
 
