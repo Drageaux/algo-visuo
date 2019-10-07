@@ -1,5 +1,5 @@
-<div>
-  <div *ngFor="let row of data" class="graph-row d-inline-block">
+<div class="grid-graph d-inline-block">
+  <div *ngFor="let row of data" class="graph-row">
     <div *ngFor="let item of row" class="graph-block d-inline-block">
       <span [style.fontSize]="'1rem'">
         <!-- {{ item.x }},{{ item.y }} -->
