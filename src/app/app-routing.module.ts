@@ -10,7 +10,8 @@ const routes: Routes = [
   },
   {
     path: 'sorts',
-    component: SortsComponent
+    loadChildren: () =>
+      import('./sorts/sorts.module').then(mod => mod.SortsModule)
   },
   {
     path: '**',
