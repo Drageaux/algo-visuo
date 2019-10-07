@@ -1,5 +1,21 @@
-@import 'node_modules/bootstrap/scss/functions';
-@import 'node_modules/bootstrap/scss/variables';
+@import '~bootstrap/scss/_functions';
+@import '~bootstrap/scss/_variables';
+
+.graph-container {
+  padding: 1rem;
+  border: 1px solid $gray-400;
+  margin: 1rem 0;
+  display: flex;
+  text-align: center;
+  overflow: scroll;
+}
+
+.graph {
+  height: 75vh;
+  div {
+    align-self: flex-end;
+  }
+}
 
 .grid-graph {
   border: 1px solid $gray-300;
