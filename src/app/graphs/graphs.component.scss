@@ -1,0 +1,15 @@
+@import '~bootstrap/scss/functions.scss';
+@import '~bootstrap/scss/variables.scss';
+
+.graph-row {
+  white-space: nowrap;
+}
+
+$block-size: 24px;
+.graph-block {
+  width: $block-size;
+  height: $block-size;
+  overflow: hidden;
+  vertical-align: top; // remove spaces under each block
+  border: 0.5px solid $gray-700;
+}
