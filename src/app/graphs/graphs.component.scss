@@ -5,13 +5,13 @@
   padding: 1rem;
   border: 1px solid $gray-400;
   margin: 1rem 0;
-  display: flex;
-  text-align: center;
   overflow: scroll;
 }
 
 .graph {
   height: 75vh;
+  display: flex;
+  text-align: center;
   div {
     align-self: flex-end;
   }
