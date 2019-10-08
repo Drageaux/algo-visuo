@@ -3,3 +3,15 @@
 .page-title {
   margin-top: 1rem;
 }
+
+.graph-container {
+  padding: 1rem;
+  border: 1px solid $gray-400;
+  margin: 1rem 0;
+  height: 75vh;
+}
+
+.graph {
+  height: 100%;
+  text-align: center;
+}

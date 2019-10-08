@@ -2,8 +2,8 @@
   <!-- TODO: make this reusable -->
   <div class="graph-container">
     <div class="graph grid-graph">
-      <div *ngFor="let row of data" class="graph-row">
-        <div *ngFor="let item of row" class="graph-block d-inline-block">
+      <div *ngFor="let row of data" class="graph-row d-inline-flex">
+        <div *ngFor="let item of row" class="graph-block d-block float-left">
           <!-- <span [style.fontSize]="'1rem'"> {{ item.x }},{{ item.y }} </span> -->
         </div>
       </div>
