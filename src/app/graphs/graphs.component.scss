@@ -6,24 +6,17 @@
   border: 1px solid $gray-400;
   margin: 1rem 0;
   height: 75vh;
-  overflow: scroll;
 }
 
 .graph {
   height: 100%;
-  display: flex;
   text-align: center;
-  div {
-    align-self: flex-end;
-  }
 }
 
 .grid-graph {
+  display: flex;
   border: 1px solid $gray-300;
-}
-
-.graph-row {
-  white-space: nowrap;
+  overflow: scroll;
 }
 
 $block-size: 24px;

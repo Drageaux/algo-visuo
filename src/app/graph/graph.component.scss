@@ -10,8 +10,11 @@
 
 .graph {
   height: 100%;
-  display: flex;
   text-align: center;
+}
+
+.bar-graph {
+  display: flex;
   div {
     align-self: flex-end;
   }

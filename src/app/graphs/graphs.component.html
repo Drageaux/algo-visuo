@@ -1,12 +1,10 @@
 <div class="container">
   <!-- TODO: make this reusable -->
   <div class="graph-container">
-    <div class="graph grid-graph d-inline-block">
+    <div class="graph grid-graph">
       <div *ngFor="let row of data" class="graph-row">
         <div *ngFor="let item of row" class="graph-block d-inline-block">
-          <span [style.fontSize]="'1rem'">
-            <!-- {{ item.x }},{{ item.y }} -->
-          </span>
+          <!-- <span [style.fontSize]="'1rem'"> {{ item.x }},{{ item.y }} </span> -->
         </div>
       </div>
     </div>
