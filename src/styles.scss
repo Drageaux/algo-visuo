@@ -9,6 +9,8 @@
   border: 1px solid $gray-400;
   margin: 1rem 0;
   height: 75vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .graph {
