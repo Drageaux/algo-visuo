@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SearchGrid, Node, SearchBlock } from '../classes/search-item';
+import { SearchGrid, SearchBlock } from '../classes/search-item';
 import { SearchStatus } from '../classes/search-status.enum';
 import { PathingService } from '../services/pathing.service';
 
@@ -25,18 +25,14 @@ export class GraphsComponent implements OnInit {
     for (let y = 0; y < this.rows; y++) {
       const row = [];
       for (let x = 0; x < this.cols; x++) {
-        row.push({ item: null, x, y } as SearchBlock<Node>);
+        row.push({ x, y, distance: Infinity } as SearchBlock);
       }
       this.data.push(row);
     }
 
     // test
-    this.data[START_NODE_ROW][START_NODE_COL].item = {
-      status: SearchStatus.ORIGIN
-    };
-    this.data[END_NODE_ROW][END_NODE_COL].item = {
-      status: SearchStatus.FINISH
-    };
+    this.data[START_NODE_ROW][START_NODE_COL].status = SearchStatus.ORIGIN;
+    this.data[END_NODE_ROW][END_NODE_COL].status = SearchStatus.FINISH;
   }
 
   findPath() {
@@ -49,7 +45,7 @@ export class GraphsComponent implements OnInit {
     );
   }
 
-  onBlockClick(block: SearchBlock<Node>) {
+  onBlockClick(block: SearchBlock) {
     console.log(`x: ${block.x} y: ${block.y}`);
   }
 }

@@ -1,13 +1,11 @@
 import { SearchStatus } from './search-status.enum';
 
-export type SearchGrid = SearchBlock<Node>[][];
+export type SearchGrid = SearchBlock[][];
 
-export interface SearchBlock<T> {
-  item?: T;
+export interface SearchBlock {
   x: number;
   y: number;
-}
-
-export interface Node {
-  status: SearchStatus;
+  status?: SearchStatus;
+  previousNode?: Node;
+  distance: number;
 }

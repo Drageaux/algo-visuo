@@ -10,9 +10,9 @@
           class="graph-block d-block float-left"
           (click)="onBlockClick(block)"
           [ngClass]="{
-            'bg-info': block.item?.status === eSearchStatus.VISITED,
-            'bg-success': block.item?.status === eSearchStatus.ORIGIN,
-            'bg-danger': block.item?.status === eSearchStatus.FINISH
+            'bg-info': block.status === eSearchStatus.VISITED,
+            'bg-success': block.status === eSearchStatus.ORIGIN,
+            'bg-danger': block.status === eSearchStatus.FINISH
           }"
         >
           <!-- <span [style.fontSize]="'1rem'"> {{ item.x }},{{ item.y }} </span> -->
