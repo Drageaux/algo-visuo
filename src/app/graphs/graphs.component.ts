@@ -7,7 +7,7 @@ import { BlockingProxy } from 'blocking-proxy';
 const START_NODE_ROW = 10;
 const START_NODE_COL = 3;
 const END_NODE_ROW = 10;
-const END_NODE_COL = 10;
+const END_NODE_COL = 15;
 
 @Component({
   selector: 'app-graphs',
@@ -39,6 +39,9 @@ export class GraphsComponent implements OnInit {
     // test
     this.data[START_NODE_ROW][START_NODE_COL].status = SearchStatus.ORIGIN;
     this.data[END_NODE_ROW][END_NODE_COL].status = SearchStatus.FINISH;
+    for (let i = 5; i < 15; i++) {
+      this.data[i][7].status = SearchStatus.WALL;
+    }
   }
 
   findPath() {
@@ -65,7 +68,7 @@ export class GraphsComponent implements OnInit {
           block.status === SearchStatus.UNVISITED
             ? SearchStatus.VISITED
             : block.status;
-      }, 50 * i);
+      }, 40 * i);
     }
   }
 

@@ -31,6 +31,15 @@
   animation-play-state: running;
 }
 
+.animated {
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
 @keyframes visitedAnimationCustom {
   0% {
     transform: scale(0.3);
