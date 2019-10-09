@@ -56,8 +56,8 @@ export class GraphsComponent implements OnInit {
     for (let i = 0; i < visitedBlocks.length; i++) {
       setTimeout(() => {
         const block = visitedBlocks[i];
-        block.status = SearchStatus.VISITED;
-      }, 50 * i);
+        block.status = SearchStatus.HIGHLIGHTED;
+      }, 500 * i);
     }
   }
 

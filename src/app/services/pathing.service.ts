@@ -101,6 +101,8 @@ export class PathingService {
       neighbors.push(grid[y][x + 1]);
     }
     // get only the ones without a node or not visited
-    return neighbors.filter(b => b.status === SearchStatus.UNVISITED);
+    return neighbors.filter(
+      b => b.status !== SearchStatus.VISITED && b.status !== SearchStatus.ORIGIN
+    );
   }
 }
