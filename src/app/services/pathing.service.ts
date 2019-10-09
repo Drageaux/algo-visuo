@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SearchGrid, SearchBlock, Node } from '../classes/search-item';
+import { SearchBlock, SearchGrid } from '../classes/search-item';
 import { SearchStatus } from '../classes/search-status.enum';
 
 // reserved for service DFS, BFS, Dijkstra and some other graphs
@@ -15,9 +15,9 @@ export class PathingService {
   dijkstra(grid: SearchGrid, startNode, finishNode): SearchBlock[] {
     const visitedNodesInOrder: SearchBlock[] = [];
     startNode.distance = 0;
-    console.log(grid);
     // start node is 0 distance, so just start with that first
     const unvisitedNode = this.flattenGrid(grid, startNode);
+
     while (!!unvisitedNode.length) {
       this.sortNodesByDistance(unvisitedNode);
       const closestNode = unvisitedNode.shift();
@@ -33,13 +33,14 @@ export class PathingService {
           case SearchStatus.FINISH:
             visitedNodesInOrder.push(closestNode);
             return visitedNodesInOrder;
-          case SearchStatus.ORIGIN:
+          // don't overwrite "status" of start node
+          case SearchStatus.UNVISITED:
+            closestNode.status = SearchStatus.VISITED;
             break;
           default:
-            closestNode.status = SearchStatus.VISITED;
-            visitedNodesInOrder.push(closestNode);
             break;
         }
+        visitedNodesInOrder.push(closestNode);
         this.updateUnvisitedNeighbors(closestNode, grid);
       }
     }
@@ -47,7 +48,10 @@ export class PathingService {
   }
 
   // TODO: make more efficient with a different data structure
-  flattenGrid(grid: SearchGrid, moveToFront?: SearchBlock): SearchBlock[] {
+  private flattenGrid(
+    grid: SearchGrid,
+    moveToFront?: SearchBlock
+  ): SearchBlock[] {
     const nodes = moveToFront ? [moveToFront] : [];
     for (const row of grid) {
       for (const node of row) {
@@ -58,29 +62,22 @@ export class PathingService {
     }
     console.log(nodes);
     return nodes;
-    // const allUnvisitedBlocks = grid.reduce((acc, val) => acc.concat(val), []);
-    // this.animateDijkstra(allUnvisitedBlocks);
   }
-
-  // animateDijkstra(visitedBlocks) {
-  //   for (let i = 0; i < visitedBlocks.length; i++) {
-  //     setTimeout(() => {
-  //       const block = visitedBlocks[i];
-  //       block.status = SearchStatus.VISITED;
-  //     }, 50 * i);
-  //   }
-  // }
 
   // TODO: make more efficient data structure
   private sortNodesByDistance(unvisitedNodes: SearchBlock[]) {
-    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+    return unvisitedNodes.sort(
+      (nodeA, nodeB) => nodeA.distance - nodeB.distance
+    );
   }
 
   private updateUnvisitedNeighbors(block: SearchBlock, grid: SearchGrid) {
     const unvisitedNeighbors = this.getUnvisitedNeighbors(block, grid);
     for (const neighbor of unvisitedNeighbors) {
-      neighbor.status = SearchStatus.VISITED;
+      neighbor.distance = block.distance + 1;
+      neighbor.previousNode = block;
     }
+    return unvisitedNeighbors;
   }
 
   private getUnvisitedNeighbors(block: SearchBlock, grid: SearchGrid) {
@@ -104,6 +101,6 @@ export class PathingService {
       neighbors.push(grid[y][x + 1]);
     }
     // get only the ones without a node or not visited
-    return neighbors.filter(b => b.status !== SearchStatus.VISITED);
+    return neighbors.filter(b => b.status === SearchStatus.UNVISITED);
   }
 }

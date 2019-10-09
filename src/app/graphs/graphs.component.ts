@@ -6,7 +6,7 @@ import { PathingService } from '../services/pathing.service';
 const START_NODE_ROW = 10;
 const START_NODE_COL = 3;
 const END_NODE_ROW = 10;
-const END_NODE_COL = 11;
+const END_NODE_COL = 5;
 
 @Component({
   selector: 'app-graphs',
@@ -25,7 +25,12 @@ export class GraphsComponent implements OnInit {
     for (let y = 0; y < this.rows; y++) {
       const row = [];
       for (let x = 0; x < this.cols; x++) {
-        row.push({ x, y, distance: Infinity } as SearchBlock);
+        row.push({
+          x,
+          y,
+          distance: Infinity,
+          status: SearchStatus.UNVISITED
+        } as SearchBlock);
       }
       this.data.push(row);
     }
@@ -43,6 +48,17 @@ export class GraphsComponent implements OnInit {
       startNode,
       finishNode
     );
+    console.log('result:', visitedNodesInOrder);
+    this.animateDijkstra(visitedNodesInOrder);
+  }
+
+  animateDijkstra(visitedBlocks) {
+    for (let i = 0; i < visitedBlocks.length; i++) {
+      setTimeout(() => {
+        const block = visitedBlocks[i];
+        block.status = SearchStatus.VISITED;
+      }, 50 * i);
+    }
   }
 
   onBlockClick(block: SearchBlock) {

@@ -5,7 +5,7 @@ export type SearchGrid = SearchBlock[][];
 export interface SearchBlock {
   x: number;
   y: number;
-  status?: SearchStatus;
-  previousNode?: Node;
+  status: SearchStatus;
+  previousNode?: SearchBlock;
   distance: number;
 }
