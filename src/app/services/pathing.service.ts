@@ -93,7 +93,7 @@ export class PathingService {
       neighbors.push(grid[y + 1][x]);
     }
     // left
-    if (x - 1 > 0) {
+    if (x - 1 >= 0) {
       neighbors.push(grid[y][x - 1]);
     }
     // right
