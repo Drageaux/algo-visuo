@@ -1,8 +1,8 @@
 export enum SearchStatus {
-  ORIGIN,
-  UNVISITED,
-  VISITED,
-  FINISH,
-  HIGHLIGHTED,
-  WALL
+  ORIGIN = 'origin',
+  UNVISITED = 'unvisited',
+  VISITED = 'visited',
+  FINISH = 'finish',
+  HIGHLIGHTED = 'highlighted',
+  WALL = 'wall'
 }

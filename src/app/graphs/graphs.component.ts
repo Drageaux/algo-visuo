@@ -7,7 +7,7 @@ import { BlockingProxy } from 'blocking-proxy';
 const START_NODE_ROW = 10;
 const START_NODE_COL = 3;
 const END_NODE_ROW = 10;
-const END_NODE_COL = 15;
+const END_NODE_COL = 10;
 
 @Component({
   selector: 'app-graphs',
@@ -49,17 +49,22 @@ export class GraphsComponent implements OnInit {
       startNode,
       finishNode
     );
-    console.log('result:', visitedNodesInOrder);
     this.animateDijkstra(visitedNodesInOrder);
   }
 
-  animateDijkstra(visitedBlocks) {
+  animateDijkstra(visitedBlocks: SearchBlock[]) {
     for (let i = 0; i < visitedBlocks.length; i++) {
       const block = visitedBlocks[i];
-      // reset color
-      block.status = SearchStatus.UNVISITED;
+      block.status =
+        block.status === SearchStatus.VISITED
+          ? SearchStatus.UNVISITED
+          : block.status;
+      // reset color for visualization
       setTimeout(() => {
-        block.status = SearchStatus.VISITED;
+        block.status =
+          block.status === SearchStatus.UNVISITED
+            ? SearchStatus.VISITED
+            : block.status;
       }, 50 * i);
     }
   }
