@@ -1,12 +1,19 @@
 <div class="container">
+  <button (click)="findPath()">Find Path</button>
+
   <!-- TODO: make this reusable -->
   <div class="graph-container">
     <div class="graph grid-graph">
       <div *ngFor="let row of data" class="graph-row d-inline-flex">
         <div
-          *ngFor="let item of row"
+          *ngFor="let block of row"
           class="graph-block d-block float-left"
-          (click)="onBlockClick(item)"
+          (click)="onBlockClick(block)"
+          [ngClass]="{
+            'bg-info': block.item?.status === eSearchStatus.VISITED,
+            'bg-success': block.item?.status === eSearchStatus.ORIGIN,
+            'bg-danger': block.item?.status === eSearchStatus.FINISH
+          }"
         >
           <!-- <span [style.fontSize]="'1rem'"> {{ item.x }},{{ item.y }} </span> -->
         </div>

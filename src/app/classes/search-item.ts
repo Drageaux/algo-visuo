@@ -1,10 +1,13 @@
 import { SearchStatus } from './search-status.enum';
 
-export interface SearchItem {
-  status: SearchStatus;
-}
+export type SearchGrid = SearchBlock<Node>[][];
 
-export interface SearchItem2D extends SearchItem {
+export interface SearchBlock<T> {
+  item?: T;
   x: number;
   y: number;
+}
+
+export interface Node {
+  status: SearchStatus;
 }
