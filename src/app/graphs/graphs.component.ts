@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { SearchGrid, SearchBlock } from '../classes/search-item';
 import { SearchStatus } from '../classes/search-status.enum';
 import { PathingService } from '../services/pathing.service';
+import { BlockingProxy } from 'blocking-proxy';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 3;
 const END_NODE_ROW = 10;
-const END_NODE_COL = 5;
+const END_NODE_COL = 15;
 
 @Component({
   selector: 'app-graphs',
@@ -54,10 +55,12 @@ export class GraphsComponent implements OnInit {
 
   animateDijkstra(visitedBlocks) {
     for (let i = 0; i < visitedBlocks.length; i++) {
+      const block = visitedBlocks[i];
+      // reset color
+      block.status = SearchStatus.UNVISITED;
       setTimeout(() => {
-        const block = visitedBlocks[i];
-        block.status = SearchStatus.HIGHLIGHTED;
-      }, 500 * i);
+        block.status = SearchStatus.VISITED;
+      }, 50 * i);
     }
   }
 
