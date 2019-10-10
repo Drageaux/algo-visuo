@@ -8,4 +8,5 @@ export interface SearchBlock {
   status: SearchStatus;
   previousNode?: SearchBlock;
   distance: number;
+  animated?: boolean;
 }

@@ -21,14 +21,6 @@
 
 // credit https://github.com/clementmihailescu/Pathfinding-Visualizer-Tutorial/blob/master/src/PathfindingVisualizer/Node/Node.css
 .bg-info {
-  animation-name: visitedAnimation;
-  animation-duration: 1.5s;
-  animation-timing-function: ease-out;
-  animation-delay: 0;
-  animation-direction: alternate;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  animation-play-state: running;
 }
 
 .animated {
@@ -39,7 +31,14 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
+  &.visited {
+    animation-name: visitedAnimation;
+  }
+  &.highlighted {
+    // animation-name: ;
+  }
 }
+
 @keyframes visitedAnimationCustom {
   0% {
     transform: scale(0.3);

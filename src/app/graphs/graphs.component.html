@@ -10,7 +10,8 @@
           class="graph-block d-block float-left"
           (click)="onBlockClick(block)"
           [ngClass]="{
-            'bg-info': block.status === eSearchStatus.VISITED,
+            animated: !!block.animated,
+            visited: block.status === eSearchStatus.VISITED,
             'bg-success': block.status === eSearchStatus.ORIGIN,
             'bg-danger': block.status === eSearchStatus.FINISH,
             'bg-warning': block.status === eSearchStatus.HIGHLIGHTED,
