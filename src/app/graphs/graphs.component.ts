@@ -1,7 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { SearchGrid, SearchBlock } from '../classes/search-item';
 import { SearchStatus } from '../classes/search-status.enum';
 import { PathingService } from '../services/pathing.service';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+  keyframes,
+  useAnimation
+  // ...
+} from '@angular/animations';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 3;
@@ -11,7 +21,66 @@ const END_NODE_COL = 15;
 @Component({
   selector: 'app-graphs',
   templateUrl: './graphs.component.html',
-  styleUrls: ['./graphs.component.scss']
+  styleUrls: ['./graphs.component.scss'],
+  animations: [
+    trigger('status', [
+      state(
+        'visited',
+        style({
+          backgroundColor: 'rgba(0, 190, 218, 0.75)'
+        })
+      ),
+      transition('* => visited', [
+        animate(
+          '1.5s',
+          keyframes([
+            style({
+              transform: 'scale(0.3)',
+              backgroundColor: 'rgba(0, 0, 66, 0.75)',
+              borderRadius: '100%',
+              offset: 0
+            }),
+            style({
+              backgroundColor: 'rgba(17, 104, 217, 0.75)',
+              offset: 0.5
+            }),
+            style({
+              transform: 'scale(1.2)',
+              backgroundColor: 'rgba(0, 217, 159, 0.75)',
+              offset: 0.75
+            }),
+            style({
+              transform: 'scale(1)',
+              backgroundColor: 'rgba(0, 190, 218, 0.75)',
+              offset: 1
+            })
+          ])
+        )
+      ]),
+      transition('* => highlighted', [
+        animate(
+          '1.5s',
+          keyframes([
+            style({
+              transform: 'scale(0.6)',
+              backgroundColor: 'rgb(255, 254, 106)',
+              offset: 0
+            }),
+            style({
+              transform: 'scale(1.2)',
+              backgroundColor: 'rgb(255, 254, 106)',
+              offset: 0.5
+            }),
+            style({
+              transform: 'scale(1)',
+              backgroundColor: 'rgb(255, 254, 106)',
+              offset: 1
+            })
+          ])
+        )
+      ])
+    ])
+  ]
 })
 export class GraphsComponent implements OnInit {
   cols = 50;

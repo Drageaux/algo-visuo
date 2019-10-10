@@ -10,20 +10,14 @@
   vertical-align: top; // remove spaces under each block
 }
 
-.graph-block {
+.graph-block,
+animated-block {
   $block-size: 24px;
   width: $block-size;
   height: $block-size;
   overflow: hidden;
   vertical-align: top; // remove spaces under each block
   border: 0.5px solid $gray-300;
-}
-
-// credit https://github.com/clementmihailescu/Pathfinding-Visualizer-Tutorial/blob/master/src/PathfindingVisualizer/Node/Node.css
-.bg-info {
-}
-
-.animated {
   animation-duration: 1.5s;
   animation-timing-function: ease-out;
   animation-delay: 0;
@@ -31,6 +25,10 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
+}
+
+// credit https://github.com/clementmihailescu/Pathfinding-Visualizer-Tutorial/blob/master/src/PathfindingVisualizer/Node/Node.css
+.animated {
   &.visited {
     animation-name: visitedAnimation;
   }
