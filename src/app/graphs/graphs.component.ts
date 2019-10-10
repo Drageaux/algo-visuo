@@ -56,19 +56,31 @@ export class GraphsComponent implements OnInit {
   }
 
   animateDijkstra(visitedBlocks: SearchBlock[]) {
+    // const performAnimation: FrameRequestCallback = i => {
+    //   const request = requestAnimationFrame(() => performAnimation(i));
+
+    //   const block = visitedBlocks[i];
+
+    //   block.status =
+    //     block.status === SearchStatus.UNVISITED
+    //       ? SearchStatus.VISITED
+    //       : block.status;
+    // };
+
     for (let i = 0; i < visitedBlocks.length; i++) {
       const block = visitedBlocks[i];
+      // reset color for visualization
+
       block.status =
         block.status === SearchStatus.VISITED
           ? SearchStatus.UNVISITED
           : block.status;
-      // reset color for visualization
       setTimeout(() => {
         block.status =
           block.status === SearchStatus.UNVISITED
             ? SearchStatus.VISITED
             : block.status;
-      }, 40 * i);
+      }, (1000 / 60) * i);
     }
   }
 
