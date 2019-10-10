@@ -109,7 +109,7 @@ export class PathingService {
   getNodesInShortestPathOrder(finishNode: SearchBlock) {
     const result = [];
     let currentNode = finishNode;
-    while (currentNode !== null) {
+    while (!!currentNode) {
       result.unshift(currentNode);
       currentNode = currentNode.previousNode;
     }
