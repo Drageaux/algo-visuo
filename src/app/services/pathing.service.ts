@@ -13,6 +13,9 @@ export class PathingService {
   /******************************** DIJKSTRA *******************************/
   /*************************************************************************/
   dijkstra(grid: SearchGrid, startNode, finishNode): SearchBlock[] {
+    if (!startNode || !finishNode || startNode === finishNode) {
+      return [];
+    }
     const visitedNodesInOrder: SearchBlock[] = [];
     startNode.distance = 0;
     // start node is 0 distance, so just start with that first
