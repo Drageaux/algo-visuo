@@ -105,4 +105,14 @@ export class PathingService {
       b => b.status !== SearchStatus.VISITED && b.status !== SearchStatus.ORIGIN
     );
   }
+
+  getNodesInShortestPathOrder(finishNode: SearchBlock) {
+    const result = [];
+    let currentNode = finishNode;
+    while (currentNode !== null) {
+      result.unshift(currentNode);
+      currentNode = currentNode.previousNode;
+    }
+    return result;
+  }
 }
