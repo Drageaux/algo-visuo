@@ -10,14 +10,13 @@
   vertical-align: top; // remove spaces under each block
 }
 
-.graph-block,
-animated-block {
+.graph-block {
   $block-size: 24px;
   width: $block-size;
   height: $block-size;
   overflow: hidden;
-  vertical-align: top; // remove spaces under each block
   border: 0.5px solid $gray-300;
+
   animation-duration: 1.5s;
   animation-timing-function: ease-out;
   animation-delay: 0;

@@ -32,48 +32,56 @@ const END_NODE_COL = 15;
       ),
       transition('* => visited', [
         animate(
-          '1.5s',
+          '1.5s 0s ease-out',
           keyframes([
             style({
               transform: 'scale(0.3)',
               backgroundColor: 'rgba(0, 0, 66, 0.75)',
-              borderRadius: '100%',
+              borderRadius: '50%',
               offset: 0
             }),
             style({
+              transform: 'scale(0.7)',
               backgroundColor: 'rgba(17, 104, 217, 0.75)',
-              offset: 0.5
+              offset: 0.4
             }),
             style({
               transform: 'scale(1.2)',
+              backgroundColor: 'rgba(0, 217, 159, 0.75)',
               offset: 0.75
             }),
             style({
               transform: 'scale(1)',
               backgroundColor: 'rgba(0, 190, 218, 0.75)',
+              borderRadius: '0',
               offset: 1
             })
           ])
         )
       ]),
+      state(
+        'highlighted',
+        style({
+          transform: 'scale(1)',
+          backgroundColor: 'rgb(255, 254, 106)',
+          offset: 1
+        })
+      ),
       transition('* => highlighted', [
         animate(
           '1.5s',
           keyframes([
             style({
               transform: 'scale(0.6)',
-              backgroundColor: 'rgb(255, 254, 106)',
-              offset: 0
+              backgroundColor: 'rgb(255, 254, 106)'
             }),
             style({
               transform: 'scale(1.2)',
-              backgroundColor: 'rgb(255, 254, 106)',
-              offset: 0.5
+              backgroundColor: 'rgb(255, 254, 106)'
             }),
             style({
               transform: 'scale(1)',
-              backgroundColor: 'rgb(255, 254, 106)',
-              offset: 1
+              backgroundColor: 'rgb(255, 254, 106)'
             })
           ])
         )
@@ -123,12 +131,13 @@ export class GraphsComponent implements OnInit {
   }
 
   animateDijkstra(visitedBlocks: SearchBlock[]) {
+    const interval = 50;
     for (let i = 0; i < visitedBlocks.length; i++) {
       const block = visitedBlocks[i];
 
       // batching so it doesn't update 1 by 1
-      const batchAmount = 5;
-      const timerAmount = 20 * batchAmount * Math.floor(i / batchAmount);
+      const batchAmount = 2;
+      const timerAmount = interval * batchAmount * Math.floor(i / batchAmount);
       setTimeout(() => {
         block.animated = true;
       }, timerAmount);
@@ -140,7 +149,7 @@ export class GraphsComponent implements OnInit {
       );
 
       this.animateShortestPath(shortestPathNodes);
-    }, 20 * visitedBlocks.length);
+    }, interval * visitedBlocks.length);
   }
 
   animateShortestPath(shortestPathNodes: SearchBlock[]) {
