@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { SearchGrid, SearchBlock } from '../classes/search-item';
 import { SearchStatus } from '../classes/search-status.enum';
 import { PathingService } from '../services/pathing.service';
-import { BlockingProxy } from 'blocking-proxy';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 3;
@@ -69,18 +68,32 @@ export class GraphsComponent implements OnInit {
 
     for (let i = 0; i < visitedBlocks.length; i++) {
       const block = visitedBlocks[i];
-      // reset color for visualization
+      setTimeout(() => {
+        block.animated = true;
+      }, 30 * i);
+    }
 
+    setTimeout(() => {
+      const shortestPathNodes = this.pathService.getNodesInShortestPathOrder(
+        this.data[END_NODE_ROW][END_NODE_COL]
+      );
+
+      this.animateShortestPath(shortestPathNodes);
+    }, 30 * visitedBlocks.length);
+  }
+
+  animateShortestPath(shortestPathNodes: SearchBlock[]) {
+    for (let i = 0; i < shortestPathNodes.length; i++) {
+      const block = shortestPathNodes[i];
+      // reset color for visualization
+      block.animated = false;
       block.status =
         block.status === SearchStatus.VISITED
-          ? SearchStatus.UNVISITED
+          ? SearchStatus.HIGHLIGHTED
           : block.status;
       setTimeout(() => {
-        block.status =
-          block.status === SearchStatus.UNVISITED
-            ? SearchStatus.VISITED
-            : block.status;
-      }, (1000 / 60) * i);
+        block.animated = true;
+      }, 20 * i);
     }
   }
 
