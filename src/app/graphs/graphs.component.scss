@@ -35,7 +35,7 @@
     animation-name: visitedAnimation;
   }
   &.highlighted {
-    // animation-name: ;
+    animation-name: shortestPathAnimation;
   }
 }
 
@@ -80,5 +80,22 @@
   100% {
     transform: scale(1);
     background-color: rgba(0, 190, 218, 0.75);
+  }
+}
+
+@keyframes shortestPathAnimation {
+  0% {
+    transform: scale(0.6);
+    background-color: rgb(255, 254, 106);
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: rgb(255, 254, 106);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: rgb(255, 254, 106);
   }
 }

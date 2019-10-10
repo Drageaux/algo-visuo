@@ -106,7 +106,7 @@ export class PathingService {
     );
   }
 
-  getNodesInShortestPathOrder(finishNode: SearchBlock) {
+  getNodesInShortestPathOrder(finishNode: SearchBlock): SearchBlock[] {
     const result = [];
     let currentNode = finishNode;
     while (!!currentNode) {
