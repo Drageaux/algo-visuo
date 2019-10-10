@@ -46,7 +46,6 @@ const END_NODE_COL = 15;
             }),
             style({
               transform: 'scale(1.2)',
-              backgroundColor: 'rgba(0, 217, 159, 0.75)',
               offset: 0.75
             }),
             style({
@@ -124,22 +123,15 @@ export class GraphsComponent implements OnInit {
   }
 
   animateDijkstra(visitedBlocks: SearchBlock[]) {
-    // const performAnimation: FrameRequestCallback = i => {
-    //   const request = requestAnimationFrame(() => performAnimation(i));
-
-    //   const block = visitedBlocks[i];
-
-    //   block.status =
-    //     block.status === SearchStatus.UNVISITED
-    //       ? SearchStatus.VISITED
-    //       : block.status;
-    // };
-
     for (let i = 0; i < visitedBlocks.length; i++) {
       const block = visitedBlocks[i];
+
+      // batching so it doesn't update 1 by 1
+      const batchAmount = 5;
+      const timerAmount = 20 * batchAmount * Math.floor(i / batchAmount);
       setTimeout(() => {
         block.animated = true;
-      }, 30 * i);
+      }, timerAmount);
     }
 
     setTimeout(() => {
@@ -148,7 +140,7 @@ export class GraphsComponent implements OnInit {
       );
 
       this.animateShortestPath(shortestPathNodes);
-    }, 30 * visitedBlocks.length);
+    }, 20 * visitedBlocks.length);
   }
 
   animateShortestPath(shortestPathNodes: SearchBlock[]) {
