@@ -42,7 +42,7 @@ const END_NODE_COL = 15;
             }),
             style({
               transform: 'scale(0.7)',
-              backgroundColor: 'rgba(17, 104, 217, 0.75)',
+              backgroundColor: 'rgba(0, 217, 159, 0.75)',
               offset: 0.4
             }),
             style({
@@ -135,9 +135,7 @@ export class GraphsComponent implements OnInit {
     for (let i = 0; i < visitedBlocks.length; i++) {
       const block = visitedBlocks[i];
 
-      // batching so it doesn't update 1 by 1
-      const batchAmount = 2;
-      const timerAmount = interval * batchAmount * Math.floor(i / batchAmount);
+      const timerAmount = interval * i;
       setTimeout(() => {
         block.animated = true;
       }, timerAmount);
