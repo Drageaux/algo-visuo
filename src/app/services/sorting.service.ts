@@ -125,7 +125,7 @@ export class SortingService {
     res.data[0].status = SortStatus.SORTED;
     res.sorted++;
     for (let a = 1; a < res.data.length; a++) {
-      let temp = res.data[a];
+      const temp = res.data[a];
       temp.status = SortStatus.SORTING;
       this.pushState(res, history);
       let b = a - 1;
@@ -219,8 +219,8 @@ export class SortingService {
     );
 
     // curr ind of sub arrs
-    let l = 0,
-      r = 0;
+    let l = 0;
+    let r = 0;
     // curr ind of merged sub arr, starting from left
     let m = left;
     // making sure to move smallest values from each sub arr forward
@@ -302,7 +302,7 @@ export class SortingService {
     history: HistoryMap
   ) {
     // for sake of simplicity, pick last el as pivot
-    const piv = arr[high];
+    let piv = arr[high];
 
     // index of the smaller element
     let i = low - 1;
@@ -320,19 +320,19 @@ export class SortingService {
           arr[j].status = SortStatus.SORTING;
           arr[i].status = SortStatus.SORTING;
           this.pushState(
-            { data: arr, sorted: history.get(history.size - 1).sorted },
+            { data: arr, sorted: this.getLastSortedAmountFromHistory(history) },
             history
           );
 
-          const temp = arr[i];
+          const tempFinal = arr[i];
           arr[i] = arr[j];
-          arr[j] = temp;
+          arr[j] = tempFinal;
 
           // postswap highlighting
           arr[i].status = SortStatus.UNSORTED;
           arr[j].status = SortStatus.UNSORTED;
           this.pushState(
-            { data: arr, sorted: history.get(history.size - 1).sorted },
+            { data: arr, sorted: this.getLastSortedAmountFromHistory(history) },
             history
           );
         } else {
@@ -346,13 +346,13 @@ export class SortingService {
 
     // at this point, we've found the NEW correct position for the pivot
     // which is i + 1 (to the right of all smaller elements)
-    const temp = arr[i + 1];
-    arr[i + 1] = arr[high];
-    arr[high] = temp;
+    const final = arr[i + 1];
+    arr[i + 1] = piv;
+    piv = final;
 
     arr[i + 1].status = SortStatus.SORTED;
     this.pushState(
-      { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
+      { data: arr, sorted: this.getLastSortedAmountFromHistory(history) + 1 },
       history
     );
     return i + 1;
@@ -407,5 +407,9 @@ export class SortingService {
    */
   returnSortItemArray(arr: SortNumberArray, wStatus = false): string[] {
     return arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`);
+  }
+
+  private getLastSortedAmountFromHistory(history: HistoryMap) {
+    return history.get(history.size - 1).sorted;
   }
 }
