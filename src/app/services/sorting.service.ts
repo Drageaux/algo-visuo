@@ -14,7 +14,12 @@ export class SortingService {
   /*************************************************************************/
   /***************************** SELECTION SORT ****************************/
   /*************************************************************************/
-
+  /**
+   * Sort by selecting the smallest value in the array, then
+   * putting it at the latest sorted index.
+   * @param input
+   * @param history
+   */
   selectionSort(input: SortNumberArray, history: HistoryMap) {
     const res = this.initResult(input);
 
@@ -59,6 +64,12 @@ export class SortingService {
   /*************************************************************************/
   /****************************** BUBBLE SORT ******************************/
   /*************************************************************************/
+  /**
+   * Sort by slowly moving/bubbling the largest value to the right,
+   * ending up at the last sorted index.
+   * @param input
+   * @param history
+   */
   bubbleSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
@@ -74,14 +85,14 @@ export class SortingService {
         if (res.data[k].value > res.data[k + 1].value) {
           // highlight preswap
           res.data[k].status = SortStatus.SORTING;
-          res.data[k + 1].status = SortStatus.SORTING;
           this.pushState(res, history);
 
           // swap
           const temp = res.data[k];
           res.data[k] = res.data[k + 1];
           res.data[k + 1] = temp;
-          res.data[k].status = SortStatus.UNSORTED;
+
+          // highlight postswap
           res.data[k + 1].status = SortStatus.UNSORTED;
           swapped = true;
         }
@@ -118,14 +129,19 @@ export class SortingService {
   /*************************************************************************/
   /***************************** INSERTION SORT ****************************/
   /*************************************************************************/
-
+  /**
+   * Sort by inserting the current value at the correct place inside
+   * the sorted subarray.
+   * @param input
+   * @param history
+   */
   insertionSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
     res.data[0].status = SortStatus.SORTED;
     res.sorted++;
     for (let a = 1; a < res.data.length; a++) {
-      let temp = res.data[a];
+      const temp = res.data[a];
       temp.status = SortStatus.SORTING;
       this.pushState(res, history);
       let b = a - 1;
@@ -152,7 +168,12 @@ export class SortingService {
   /*************************************************************************/
   /******************************* MERGE SORT ******************************/
   /*************************************************************************/
-
+  /**
+   * Sort by recursively splitting the array into 2 halves
+   * then merge them after they are sorted.
+   * @param input
+   * @param history
+   */
   mergeSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
@@ -219,8 +240,8 @@ export class SortingService {
     );
 
     // curr ind of sub arrs
-    let l = 0,
-      r = 0;
+    let l = 0;
+    let r = 0;
     // curr ind of merged sub arr, starting from left
     let m = left;
     // making sure to move smallest values from each sub arr forward
@@ -259,7 +280,13 @@ export class SortingService {
   /*************************************************************************/
   /******************************* MERGE SORT ******************************/
   /*************************************************************************/
-
+  /**
+   * Sort by picking a pivot, putting smaller values to the left of
+   * the pivot's final position, then inserting the pivot
+   * to the right of all those smaller values.
+   * @param input
+   * @param history
+   */
   quickSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
@@ -275,7 +302,7 @@ export class SortingService {
     if (low < high) {
       arr[high].status = SortStatus.PIVOT;
       this.pushState(
-        { data: arr, sorted: history.get(history.size - 1).sorted },
+        { data: arr, sorted: this.getLastSortedAmountFromHistory(history) },
         history
       );
 
@@ -289,7 +316,7 @@ export class SortingService {
       // if go down to 1-item range, it should be in the right place already
       arr[low].status = SortStatus.SORTED;
       this.pushState(
-        { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
+        { data: arr, sorted: this.getLastSortedAmountFromHistory(history) + 1 },
         history
       );
     }
@@ -320,19 +347,19 @@ export class SortingService {
           arr[j].status = SortStatus.SORTING;
           arr[i].status = SortStatus.SORTING;
           this.pushState(
-            { data: arr, sorted: history.get(history.size - 1).sorted },
+            { data: arr, sorted: this.getLastSortedAmountFromHistory(history) },
             history
           );
 
-          const temp = arr[i];
+          const tempFinal = arr[i];
           arr[i] = arr[j];
-          arr[j] = temp;
+          arr[j] = tempFinal;
 
           // postswap highlighting
           arr[i].status = SortStatus.UNSORTED;
           arr[j].status = SortStatus.UNSORTED;
           this.pushState(
-            { data: arr, sorted: history.get(history.size - 1).sorted },
+            { data: arr, sorted: this.getLastSortedAmountFromHistory(history) },
             history
           );
         } else {
@@ -346,13 +373,13 @@ export class SortingService {
 
     // at this point, we've found the NEW correct position for the pivot
     // which is i + 1 (to the right of all smaller elements)
-    const temp = arr[i + 1];
+    const final = arr[i + 1];
     arr[i + 1] = arr[high];
-    arr[high] = temp;
+    arr[high] = final;
 
     arr[i + 1].status = SortStatus.SORTED;
     this.pushState(
-      { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
+      { data: arr, sorted: this.getLastSortedAmountFromHistory(history) + 1 },
       history
     );
     return i + 1;
@@ -407,5 +434,9 @@ export class SortingService {
    */
   returnSortItemArray(arr: SortNumberArray, wStatus = false): string[] {
     return arr.map(x => x.value + `${wStatus ? '|' + x.status : ''}`);
+  }
+
+  private getLastSortedAmountFromHistory(history: HistoryMap) {
+    return history.get(history.size - 1).sorted;
   }
 }
