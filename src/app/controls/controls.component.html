@@ -1,17 +1,17 @@
 <div class="form-row">
-  <div class="form-group col pr-4">
-    <label for="speed">Animation Duration: {{ speed }}</label>
+  <div *ngIf="speed" class="form-group col pr-4">
+    <label for="speed">Speed: {{ speed }}</label>
     <input
       id="speed"
       class="form-control-range"
       [value]="speed"
       (change)="speedChangeEvent.emit($event.target.value)"
       type="range"
-      min="20"
-      max="{{ env.production ? 1000 : 2000 }}"
+      min="1"
+      max="100"
     />
   </div>
-  <div class="form-group col pl-4">
+  <div *ngIf="sampleSize" class="form-group col pl-4">
     <!-- (change) fires once for type number -->
     <label for="sample-size">Sample Size: {{ sampleSize }}</label>
     <input
@@ -21,7 +21,7 @@
       (change)="sampleSizeChangeEvent.emit($event.target.value)"
       type="range"
       min="10"
-      max="500"
+      max="250"
       #size
     />
   </div>

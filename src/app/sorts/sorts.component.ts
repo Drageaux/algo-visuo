@@ -24,7 +24,7 @@ export class SortsComponent implements OnInit, OnDestroy {
   // shared resources among sorts
   input: SortItem<number>[] = [];
   sampleSize = 100;
-  speed = 200;
+  speed = 50;
   period$ = new BehaviorSubject<number>(this.speed);
   // history of data
   history: Map<number, SortData>;
@@ -42,8 +42,8 @@ export class SortsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!this.env.production) {
-      this.sampleSize = 10;
-      this.speed = 500;
+      this.sampleSize = 50;
+      this.speed = 50;
       this.currSortType = SortType.QUICK;
     }
     this.onChangeSampleSize();
@@ -100,7 +100,7 @@ export class SortsComponent implements OnInit, OnDestroy {
     let currState = 0;
     this.subs.sink = this.period$
       .pipe(
-        switchMap(speed => interval(speed / 2)),
+        switchMap(speed => interval(1000 / (speed * 2))),
         map(() => this.history.get(currState)),
         takeWhile(x => x != null),
         tap(x => {

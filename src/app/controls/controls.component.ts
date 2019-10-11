@@ -7,9 +7,9 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./controls.component.scss']
 })
 export class ControlsComponent implements OnInit {
-  @Input() speed = 200;
+  @Input() speed: number;
   @Output() speedChangeEvent = new EventEmitter<number>();
-  @Input() sampleSize = 100;
+  @Input() sampleSize: number;
   @Output() sampleSizeChangeEvent = new EventEmitter<number>();
   env = environment;
 
