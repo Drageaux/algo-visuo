@@ -14,7 +14,12 @@ export class SortingService {
   /*************************************************************************/
   /***************************** SELECTION SORT ****************************/
   /*************************************************************************/
-
+  /**
+   * Sort by selecting the smallest value in the array, then
+   * putting it at the latest sorted index.
+   * @param input
+   * @param history
+   */
   selectionSort(input: SortNumberArray, history: HistoryMap) {
     const res = this.initResult(input);
 
@@ -59,6 +64,12 @@ export class SortingService {
   /*************************************************************************/
   /****************************** BUBBLE SORT ******************************/
   /*************************************************************************/
+  /**
+   * Sort by slowly moving/bubbling the largest value to the right,
+   * ending up at the last sorted index.
+   * @param input
+   * @param history
+   */
   bubbleSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
@@ -118,7 +129,12 @@ export class SortingService {
   /*************************************************************************/
   /***************************** INSERTION SORT ****************************/
   /*************************************************************************/
-
+  /**
+   * Sort by inserting the current value at the correct place inside
+   * the sorted subarray.
+   * @param input
+   * @param history
+   */
   insertionSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
@@ -152,7 +168,12 @@ export class SortingService {
   /*************************************************************************/
   /******************************* MERGE SORT ******************************/
   /*************************************************************************/
-
+  /**
+   * Sort by recursively splitting the array into 2 halves
+   * then merge them after they are sorted.
+   * @param input
+   * @param history
+   */
   mergeSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
@@ -259,7 +280,13 @@ export class SortingService {
   /*************************************************************************/
   /******************************* MERGE SORT ******************************/
   /*************************************************************************/
-
+  /**
+   * Sort by picking a pivot, putting smaller values to the left of
+   * the pivot's final position, then inserting the pivot
+   * at the right of all those smaller values.
+   * @param input
+   * @param history
+   */
   quickSort(input: SortNumberArray, history: HistoryMap) {
     const res: SortData = this.initResult(input);
 
