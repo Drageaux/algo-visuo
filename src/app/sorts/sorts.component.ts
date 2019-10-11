@@ -25,7 +25,7 @@ export class SortsComponent implements OnInit, OnDestroy {
   input: SortItem<number>[] = [];
   sampleSize = 100;
   speed = 50;
-  period$ = new BehaviorSubject<number>(this.speed);
+  speed$ = new BehaviorSubject<number>(this.speed);
   // history of data
   history: Map<number, SortData>;
   stateId = 0;
@@ -96,9 +96,9 @@ export class SortsComponent implements OnInit, OnDestroy {
     this.sort(this.input);
     console.log(this.history.size);
 
-    // TODO: start animation when done sorting
+    // TODO: start animation after sorting async
     let currState = 0;
-    this.subs.sink = this.period$
+    this.subs.sink = this.speed$
       .pipe(
         switchMap(speed => interval(1000 / (speed * 2))),
         map(() => this.history.get(currState)),
@@ -110,7 +110,7 @@ export class SortsComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
-    this.period$.next(this.speed);
+    this.speed$.next(this.speed);
   }
 
   /**

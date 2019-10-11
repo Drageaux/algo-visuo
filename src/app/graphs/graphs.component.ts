@@ -1,3 +1,5 @@
+import { switchMap, map, takeWhile, tap } from 'rxjs/operators';
+import { BehaviorSubject, interval } from 'rxjs';
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { SearchGrid, SearchBlock } from '../classes/search-item';
 import { SearchStatus } from '../classes/search-status.enum';
@@ -12,6 +14,7 @@ import {
   useAnimation
   // ...
 } from '@angular/animations';
+import { SubSink } from 'subsink';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 3;
@@ -90,10 +93,21 @@ const END_NODE_COL = 15;
   ]
 })
 export class GraphsComponent implements OnInit {
+  // need declare
+  eSearchStatus = SearchStatus;
+  // shared resources among graph path finders
+  input: SearchGrid = [];
   cols = 50;
   rows = 50;
-  data: SearchGrid = [];
-  eSearchStatus = SearchStatus;
+  speed = 50;
+  speed$ = new BehaviorSubject<number>(50);
+  // history of data
+  history: Map<number, SearchGrid> = new Map();
+  stateId = 0;
+  // protected model
+  result$ = new BehaviorSubject<SearchGrid>([]);
+  // subscription cleaner
+  subs = new SubSink();
 
   constructor(private pathService: PathingService) {}
 
@@ -108,46 +122,62 @@ export class GraphsComponent implements OnInit {
           status: SearchStatus.UNVISITED
         } as SearchBlock);
       }
-      this.data.push(row);
+      this.input.push(row);
     }
 
     // test
-    this.data[START_NODE_ROW][START_NODE_COL].status = SearchStatus.ORIGIN;
-    this.data[END_NODE_ROW][END_NODE_COL].status = SearchStatus.FINISH;
+    this.input[START_NODE_ROW][START_NODE_COL].status = SearchStatus.ORIGIN;
+    this.input[END_NODE_ROW][END_NODE_COL].status = SearchStatus.FINISH;
     for (let i = 5; i < 15; i++) {
-      this.data[i][7].status = SearchStatus.WALL;
+      this.input[i][7].status = SearchStatus.WALL;
     }
+    this.result$.next(this.input);
   }
 
   findPath() {
-    const startNode = this.data[START_NODE_ROW][START_NODE_COL];
-    const finishNode = this.data[END_NODE_ROW][END_NODE_COL];
+    const startNode = this.input[START_NODE_ROW][START_NODE_COL];
+    const finishNode = this.input[END_NODE_ROW][END_NODE_COL];
     const visitedNodesInOrder = this.pathService.dijkstra(
-      this.data,
+      this.input,
       startNode,
       finishNode
     );
+    console.log(this.history.size);
     this.animateDijkstra(visitedNodesInOrder);
   }
 
   animateDijkstra(visitedBlocks: SearchBlock[]) {
-    const interval = 50;
+    const duration = 50;
     for (let i = 0; i < visitedBlocks.length; i++) {
       const block = visitedBlocks[i];
 
-      const timerAmount = interval * i;
+      const timerAmount = duration * i;
       setTimeout(() => {
         block.animated = true;
       }, timerAmount);
     }
 
+    let currState = 0;
+    this.subs.sink = this.speed$
+      .pipe(
+        switchMap(speed => interval(1000 / (speed * 2))),
+        map(() => this.history.get(currState)),
+        takeWhile(x => x != null),
+        tap(x => {
+          this.history.delete(currState);
+          this.result$.next(x);
+          currState++;
+        })
+      )
+      .subscribe(() => console.log('end'));
+
     setTimeout(() => {
       const shortestPathNodes = this.pathService.getNodesInShortestPathOrder(
-        this.data[END_NODE_ROW][END_NODE_COL]
+        this.input[END_NODE_ROW][END_NODE_COL]
       );
 
       this.animateShortestPath(shortestPathNodes);
-    }, interval * visitedBlocks.length);
+    }, 1 * visitedBlocks.length);
   }
 
   animateShortestPath(shortestPathNodes: SearchBlock[]) {

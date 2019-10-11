@@ -1,16 +1,16 @@
 <div class="container">
   <button (click)="findPath()">Find Path</button>
-  {{ data[4][4].status }} {{ !!data[4][4].animated }}
-  <div
+  <!-- {{ data[4][4].status }} {{ !!data[4][4].animated }} -->
+  <!-- <div
     class="graph-block d-block float-left"
     [@status]="!!data[4][4].animated ? data[4][4].status : ''"
     (click)="data[4][4].status = eSearchStatus.VISITED"
-  ></div>
+  ></div> -->
 
   <!-- TODO: make this reusable -->
   <div class="graph-container">
     <div class="graph grid-graph">
-      <div *ngFor="let row of data" class="graph-row d-inline-flex">
+      <div *ngFor="let row of result$ | async" class="graph-row d-inline-flex">
         <div
           *ngFor="let block of row"
           class="graph-block d-block float-left"
