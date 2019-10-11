@@ -74,14 +74,14 @@ export class SortingService {
         if (res.data[k].value > res.data[k + 1].value) {
           // highlight preswap
           res.data[k].status = SortStatus.SORTING;
-          res.data[k + 1].status = SortStatus.SORTING;
           this.pushState(res, history);
 
           // swap
           const temp = res.data[k];
           res.data[k] = res.data[k + 1];
           res.data[k + 1] = temp;
-          res.data[k].status = SortStatus.UNSORTED;
+
+          // highlight postswap
           res.data[k + 1].status = SortStatus.UNSORTED;
           swapped = true;
         }
