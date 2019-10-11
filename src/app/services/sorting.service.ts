@@ -283,7 +283,7 @@ export class SortingService {
   /**
    * Sort by picking a pivot, putting smaller values to the left of
    * the pivot's final position, then inserting the pivot
-   * at the right of all those smaller values.
+   * to the right of all those smaller values.
    * @param input
    * @param history
    */
