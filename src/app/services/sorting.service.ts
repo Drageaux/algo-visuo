@@ -275,7 +275,7 @@ export class SortingService {
     if (low < high) {
       arr[high].status = SortStatus.PIVOT;
       this.pushState(
-        { data: arr, sorted: history.get(history.size - 1).sorted },
+        { data: arr, sorted: this.getLastSortedAmountFromHistory(history) },
         history
       );
 
@@ -289,7 +289,7 @@ export class SortingService {
       // if go down to 1-item range, it should be in the right place already
       arr[low].status = SortStatus.SORTED;
       this.pushState(
-        { data: arr, sorted: history.get(history.size - 1).sorted + 1 },
+        { data: arr, sorted: this.getLastSortedAmountFromHistory(history) + 1 },
         history
       );
     }
@@ -302,7 +302,7 @@ export class SortingService {
     history: HistoryMap
   ) {
     // for sake of simplicity, pick last el as pivot
-    let piv = arr[high];
+    const piv = arr[high];
 
     // index of the smaller element
     let i = low - 1;
@@ -347,8 +347,8 @@ export class SortingService {
     // at this point, we've found the NEW correct position for the pivot
     // which is i + 1 (to the right of all smaller elements)
     const final = arr[i + 1];
-    arr[i + 1] = piv;
-    piv = final;
+    arr[i + 1] = arr[high];
+    arr[high] = final;
 
     arr[i + 1].status = SortStatus.SORTED;
     this.pushState(
