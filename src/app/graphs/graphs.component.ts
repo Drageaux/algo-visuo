@@ -112,6 +112,7 @@ export class GraphsComponent implements OnInit {
   constructor(private pathService: PathingService) {}
 
   ngOnInit() {
+    this.input = [];
     for (let y = 0; y < this.rows; y++) {
       const row = [];
       for (let x = 0; x < this.cols; x++) {
@@ -135,6 +136,7 @@ export class GraphsComponent implements OnInit {
   }
 
   findPath() {
+    this.ngOnInit();
     const startNode = this.input[START_NODE_ROW][START_NODE_COL];
     const finishNode = this.input[END_NODE_ROW][END_NODE_COL];
     const visitedNodesInOrder = this.pathService.dijkstra(
@@ -149,27 +151,29 @@ export class GraphsComponent implements OnInit {
   animateDijkstra(visitedBlocks: SearchBlock[]) {
     const duration = 50;
     for (let i = 0; i < visitedBlocks.length; i++) {
-      const block = visitedBlocks[i];
-
-      const timerAmount = duration * i;
-      setTimeout(() => {
-        block.animated = true;
-      }, timerAmount);
+      // const block = visitedBlocks[i];
+      // const timerAmount = duration * i;
+      // setTimeout(() => {
+      //   block.animated = true;
+      // }, timerAmount);
     }
 
     let currState = 0;
     this.subs.sink = this.speed$
       .pipe(
+        tap(x => console.log(10000 / (x * 2))),
         switchMap(speed => interval(1000 / (speed * 2))),
-        map(() => this.history.get(currState)),
+        map(() => visitedBlocks[currState]),
         takeWhile(x => x != null),
         tap(x => {
-          this.history.delete(currState);
-          this.result$.next(x);
+          // this.history.delete(currState);
+          // console.log(x);
+
+          x.animated = true;
           currState++;
         })
       )
-      .subscribe(() => console.log('end'));
+      .subscribe();
 
     setTimeout(() => {
       const shortestPathNodes = this.pathService.getNodesInShortestPathOrder(

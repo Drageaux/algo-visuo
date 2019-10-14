@@ -1,4 +1,8 @@
 <div class="container">
+  <app-controls
+    [speed]="speed"
+    (speedChangeEvent)="speed = $event; speed$.next(speed)"
+  ></app-controls>
   <button (click)="findPath()">Find Path</button>
   <!-- {{ data[4][4].status }} {{ !!data[4][4].animated }} -->
   <!-- <div

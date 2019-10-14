@@ -96,7 +96,7 @@ export class SortsComponent implements OnInit, OnDestroy {
     this.sort(this.input);
     console.log(this.history.size);
 
-    // TODO: start animation after sorting async
+    // TODO: start animation after done sorting
     let currState = 0;
     this.subs.sink = this.speed$
       .pipe(
