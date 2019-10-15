@@ -25,6 +25,7 @@
 
   <app-controls
     [speed]="speed"
+    [maxSpeed]="500"
     (speedChangeEvent)="speed = $event; speed$.next(speed)"
     [sampleSize]="sampleSize"
     (sampleSizeChangeEvent)="sampleSize = $event; onChangeSampleSize()"

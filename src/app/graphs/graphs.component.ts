@@ -97,9 +97,15 @@ export class GraphsComponent implements OnInit {
   eSearchStatus = SearchStatus;
   // shared resources among graph path finders
   input: SearchGrid = [];
-  cols = 50;
-  rows = 50;
-  speed = 50;
+  cols = 30;
+  rows = 30;
+  speed = 300;
+  get minSpeed() {
+    return 1;
+  }
+  get maxSpeed() {
+    return 500;
+  }
   speed$ = new BehaviorSubject<number>(50);
   // history of data
   history: Map<number, SearchGrid> = new Map();

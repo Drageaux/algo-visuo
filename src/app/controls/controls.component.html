@@ -5,10 +5,10 @@
       id="speed"
       class="form-control-range"
       [value]="speed"
+      [min]="minSpeed"
+      [max]="maxSpeed"
       (change)="speedChangeEvent.emit($event.target.value)"
       type="range"
-      min="1"
-      max="1000"
     />
   </div>
   <div *ngIf="sampleSize" class="form-group col pl-4">
@@ -20,8 +20,8 @@
       [value]="sampleSize"
       (change)="sampleSizeChangeEvent.emit($event.target.value)"
       type="range"
-      min="10"
-      max="250"
+      [min]="minSampleSize"
+      [max]="maxSampleSize"
       #size
     />
   </div>

@@ -1,6 +1,8 @@
 <div class="container">
   <app-controls
     [speed]="speed"
+    [minSpeed]="1"
+    [maxSpeed]="500"
     (speedChangeEvent)="speed = $event; speed$.next(speed); log(speed)"
   ></app-controls>
   <button (click)="findPath()">Find Path</button>
