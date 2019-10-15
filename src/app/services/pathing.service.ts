@@ -12,14 +12,14 @@ export class PathingService {
   /*************************************************************************/
   /******************************** DIJKSTRA *******************************/
   /*************************************************************************/
-  dijkstra(grid: SearchGrid, startNode, finishNode): SearchBlock[] {
+  dijkstra(input: SearchGrid, startNode, finishNode): SearchBlock[] {
     if (!startNode || !finishNode || startNode === finishNode) {
       return [];
     }
     const visitedNodesInOrder: SearchBlock[] = [];
     startNode.distance = 0;
     // start node is 0 distance, so just start with that first
-    const unvisitedNode = this.flattenGrid(grid, startNode);
+    const unvisitedNode = this.flattenGrid(input, startNode);
 
     while (!!unvisitedNode.length) {
       this.sortNodesByDistance(unvisitedNode);
@@ -29,6 +29,7 @@ export class PathingService {
         // skip this loop if wall
         continue;
       } else if (closestNode.distance === Infinity) {
+        console.log('distance:', closestNode);
         // closest node is infinite distance, so we're stuck
         return visitedNodesInOrder;
       } else {
@@ -44,7 +45,7 @@ export class PathingService {
             break;
         }
         visitedNodesInOrder.push(closestNode);
-        this.updateUnvisitedNeighbors(closestNode, grid);
+        this.updateUnvisitedNeighbors(closestNode, input);
       }
     }
     return [];
@@ -59,6 +60,7 @@ export class PathingService {
     for (const row of grid) {
       for (const node of row) {
         if (node !== moveToFront) {
+          node.distance = Infinity;
           nodes.push(node);
         }
       }
@@ -117,5 +119,18 @@ export class PathingService {
       currentNode = currentNode.previousNode;
     }
     return result;
+  }
+
+  /*************************************************************************/
+  /**************************** HELPER FUNCTIONS ***************************/
+  /*************************************************************************/
+  /**
+   * Return a copy of the original obj so that
+   * changes to the new obj doesn't modify the original
+   *
+   * @param srcObj - source object to copy from
+   */
+  deepCopy(srcObj) {
+    return JSON.parse(JSON.stringify(srcObj));
   }
 }

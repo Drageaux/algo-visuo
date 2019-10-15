@@ -1,7 +1,7 @@
 <div class="container">
   <app-controls
     [speed]="speed"
-    (speedChangeEvent)="speed = $event; speed$.next(speed)"
+    (speedChangeEvent)="speed = $event; speed$.next(speed); log(speed)"
   ></app-controls>
   <button (click)="findPath()">Find Path</button>
   <!-- {{ data[4][4].status }} {{ !!data[4][4].animated }} -->
@@ -13,15 +13,15 @@
 
   <!-- TODO: make this reusable -->
   <div class="graph-container">
-    <div class="graph grid-graph">
-      <div *ngFor="let row of result$ | async" class="graph-row d-inline-flex">
+    <div *ngIf="result$ | async as result" class="graph grid-graph">
+      <div *ngFor="let row of result" class="graph-row d-inline-flex">
         <div
           *ngFor="let block of row"
           class="graph-block d-block float-left"
           (click)="onBlockClick(block)"
-          [@status]="!!block.animated ? block.status : ''"
+          [@status]="block.animated ? block.status : ''"
           [ngClass]="{
-            animated: !!block.animated,
+            animated: block.animated,
             'bg-success': block.status === eSearchStatus.ORIGIN,
             'bg-danger': block.status === eSearchStatus.FINISH,
             'bg-dark': block.status === eSearchStatus.WALL
@@ -31,7 +31,7 @@
           <!-- visited: block.status === eSearchStatus.VISITED,
             highlighted: block.status === eSearchStatus.HIGHLIGHTED, -->
           <!-- <span [style.fontSize]="'1rem'"> {{ item.x }},{{ item.y }} </span> -->
-          <ng-container [ngSwitch]="block.status">
+          <ng-container *ngIf="block.status" [ngSwitch]="block.status">
             <span *ngSwitchCase="eSearchStatus.HIGHLIGHTED"></span>
             <span *ngSwitchCase="eSearchStatus.ORIGIN">🐶</span>
             <span *ngSwitchCase="eSearchStatus.FINISH">🦴</span>

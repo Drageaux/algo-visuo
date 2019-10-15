@@ -137,39 +137,44 @@ export class GraphsComponent implements OnInit {
 
   findPath() {
     this.ngOnInit();
-    const startNode = this.input[START_NODE_ROW][START_NODE_COL];
-    const finishNode = this.input[END_NODE_ROW][END_NODE_COL];
+
+    const result = JSON.parse(JSON.stringify(this.input));
+    const startNode = result[START_NODE_ROW][START_NODE_COL];
+    const finishNode = result[END_NODE_ROW][END_NODE_COL];
+    console.log(result);
+    // return;
     const visitedNodesInOrder = this.pathService.dijkstra(
-      this.input,
+      result,
       startNode,
       finishNode
     );
-    console.log(this.history.size);
-    this.animateDijkstra(visitedNodesInOrder);
+    console.log(result);
+    this.animateDijkstra(visitedNodesInOrder, result);
   }
 
-  animateDijkstra(visitedBlocks: SearchBlock[]) {
-    const duration = 50;
-    for (let i = 0; i < visitedBlocks.length; i++) {
-      // const block = visitedBlocks[i];
-      // const timerAmount = duration * i;
-      // setTimeout(() => {
-      //   block.animated = true;
-      // }, timerAmount);
-    }
+  animateDijkstra(visitedBlocks: SearchBlock[], resultingGrid: SearchGrid) {
+    // const duration = 50;
+    // for (let i = 0; i < visitedBlocks.length; i++) {
+    //   const block = visitedBlocks[i];
+    //   const timerAmount = duration * i;
+    //   setTimeout(() => {
+    //     block.animated = true;
+    //   }, timerAmount);
+    // }
 
     let currState = 0;
     this.subs.sink = this.speed$
       .pipe(
-        tap(x => console.log(10000 / (x * 2))),
-        switchMap(speed => interval(1000 / (speed * 2))),
+        tap(x => console.log(10000 / x)),
+        switchMap(speed => interval(10000 / speed)),
         map(() => visitedBlocks[currState]),
-        takeWhile(x => x != null),
+        takeWhile(x => x != null || currState < 5),
         tap(x => {
           // this.history.delete(currState);
-          // console.log(x);
+          console.log(x);
 
           x.animated = true;
+          this.result$.next(resultingGrid);
           currState++;
         })
       )
@@ -201,5 +206,9 @@ export class GraphsComponent implements OnInit {
 
   onBlockClick(block: SearchBlock) {
     console.log(`x: ${block.x} y: ${block.y}`);
+  }
+
+  log($event) {
+    console.log($event);
   }
 }
