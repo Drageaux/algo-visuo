@@ -99,7 +99,7 @@ export class GraphsComponent implements OnInit {
   input: SearchGrid = [];
   cols = 30;
   rows = 30;
-  speed = 300;
+  speed = 350;
   get minSpeed() {
     return 1;
   }

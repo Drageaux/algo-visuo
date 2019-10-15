@@ -1,12 +1,13 @@
 <div class="form-row">
   <div *ngIf="speed" class="form-group col pr-4">
     <label for="speed">Speed: {{ speed }}</label>
+    <!-- !initial value has to come after min and max -->
     <input
       id="speed"
       class="form-control-range"
-      [value]="speed"
       [min]="minSpeed"
       [max]="maxSpeed"
+      [value]="speed"
       (change)="speedChangeEvent.emit($event.target.value)"
       type="range"
     />
@@ -17,11 +18,11 @@
     <input
       id="sample-size"
       class="form-control-range"
+      [min]="minSampleSize"
+      [max]="maxSampleSize"
       [value]="sampleSize"
       (change)="sampleSizeChangeEvent.emit($event.target.value)"
       type="range"
-      [min]="minSampleSize"
-      [max]="maxSampleSize"
       #size
     />
   </div>
