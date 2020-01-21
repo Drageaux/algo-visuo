@@ -1,4 +1,9 @@
-@import 'bootstrap/scss/bootstrap';
+@import "bootstrap/scss/bootstrap";
+
+a,
+.btn {
+  cursor: pointer;
+}
 
 .page-title {
   margin-top: 1rem;
