@@ -13,7 +13,7 @@ export class RandomNumService {
   generate(size: number): number[] {
     // https://stackoverflow.com/a/43044960
     return Array.from({ length: size }, () =>
-      this.getRndInteger(1, parseInt(size + '') + 1)
+      this.getRndInteger(1, parseInt(size + '', 10) + 1)
     );
   }
 

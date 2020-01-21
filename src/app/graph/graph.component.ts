@@ -55,7 +55,7 @@ export class GraphComponent implements OnInit, AfterViewInit, OnChanges {
       this.onResize();
     }
     if (simpleChanges.data) {
-      // console.log(simpleChanges.data);
+      console.log(simpleChanges.data);
     }
   }
 }

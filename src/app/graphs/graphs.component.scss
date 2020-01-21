@@ -1,0 +1,27 @@
+@import '~bootstrap/scss/_functions';
+@import '~bootstrap/scss/_variables';
+
+.grid-graph {
+  border: 1px solid $gray-300;
+  overflow: scroll;
+}
+
+.graph-row {
+  vertical-align: top; // remove spaces under each block
+}
+
+.graph-block {
+  $block-size: 24px;
+  width: $block-size;
+  height: $block-size;
+  overflow: hidden;
+  border: 0.5px solid $gray-300;
+
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}

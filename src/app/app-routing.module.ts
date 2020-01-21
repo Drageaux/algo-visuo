@@ -1,11 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { SortsComponent } from './sorts/sorts.component';
 
 const routes: Routes = [
   {
+    path: 'graphs',
+    loadChildren: () =>
+      import('./graphs/graphs.module').then(mod => mod.GraphsModule)
+  },
+  {
     path: 'sorts',
-    component: SortsComponent
+    loadChildren: () =>
+      import('./sorts/sorts.module').then(mod => mod.SortsModule)
   },
   {
     path: '**',
